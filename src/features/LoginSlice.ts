@@ -1,18 +1,24 @@
-//Login Page Slice
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 
-const loginSlice = createSlice({
-  name: 'login',
-  initialState: {
-    isLoggedIn: false,
-    user: null,
-  },
-  reducers: {
-    login(state, action) {
-      state.isLoggedIn = true
-      state.user = action.payload},
-    }
-})
-//exporting the slice
-export default loginSlice.reducer
+export interface LoginState {
+  username: string;
+  password: string;
+  email: string;
+}
+// Define the initial state using that type
+const initialState: LoginState = {
+  username: "Melokuhle",
+  password: "12345",
+  email:"melokuhle@9908gmail.com",
+
+};
+
+export const loginSlice = createSlice({
+  name: "counter",
+  // `createSlice` will infer the state type from the `initialState` argument
+  initialState,
+  reducers: {},
+});
+export default loginSlice.reducer;
