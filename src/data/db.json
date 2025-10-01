@@ -1,4 +1,13 @@
 {
-  "user": []
-
+  "user": [
+    {
+      "id": "2da7",
+      "username": "melokuhle",
+      "password": "123456",
+      "email": "melokuhlemaphisa99@gmail.com",
+      "name": "Melokuhle",
+      "surname": "Maphisa",
+      "cellNumber": "0649581777"
+    }
+  ]
 }

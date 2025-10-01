@@ -4,29 +4,73 @@ import axios from "axios";
 export interface RegisterState {
   username: string;
   password: string;
-  Email :string;
-  Name : string;
- Surname :string;
- CellNumber :string;
-
+  email: string;
+  name: string;
+  surname: string;
+  cellNumber: string;
+  loading: boolean;
+  error: string | null;
 }
-// Define the initial state using that type
+
 const initialState: RegisterState = {
   username: "",
   password: "",
-  Email :"",
-  Name : "",
-  Surname :"",
-  CellNumber : "",
- 
-
+  email: "",
+  name: "",
+  surname: "",
+  cellNumber: "",
+  loading: false,
+  error: null,
 };
-export const RegisterSlice = createSlice({
-  name: "counter",
-  // `createSlice` will infer the state type from the `initialState` argument
+
+// Define a separate type for the user registration payload
+export interface RegisterPayload {
+  username: string;
+  password: string;
+  email: string;
+  name: string;
+  surname: string;
+  cellNumber: string;
+}
+
+// Update async thunk to use RegisterPayload
+export const registerUser = createAsyncThunk(
+  "register/registerUser",
+  async (userData: RegisterPayload, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("http://localhost:3000/user", userData);
+      return response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || "Error registering user");
+    }
+  }
+);
+
+
+export const registerSlice = createSlice({
+  name: "register",
   initialState,
-  reducers: {},
+  reducers: {
+    setField: (state, action) => {
+      const { field, value } = action.payload;
+      (state as any)[field] = value;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(registerUser.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+  },
 });
 
-
-export default RegisterSlice.reducer;
+export const { setField } = registerSlice.actions;
+export default registerSlice.reducer;
