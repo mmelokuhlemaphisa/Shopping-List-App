@@ -1,9 +1,10 @@
-import React from "react"
+import React from "react";
 import type { FormEvent, ChangeEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import type  {RootState, AppDispatch } from "../../store";
+import type { RootState, AppDispatch } from "../../store";
 import { registerUser, setField } from "../features/RegisterSlice";
 import { useNavigate } from "react-router-dom";
+import "../App.css"; // import styles
 
 const Register: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -31,117 +32,94 @@ const Register: React.FC = () => {
         registerUser({ username, password, email, name, surname, cellNumber })
       ).unwrap();
       alert("Registration successful!");
-      navigate("/login"); // redirect to login after success
+      navigate("/login");
     } catch (err) {
       console.error(err);
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded shadow-md w-full max-w-md"
-      >
-        <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
+    <div className="auth-container">
+      <div className="overlay"></div>
 
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        <br />
-        <label htmlFor="username">Enter Username:</label>
-        <br />
+      <form onSubmit={handleSubmit} className="auth-card">
+        <h2 className="auth-title">Create Account ✨</h2>
+
+        {error && <p className="error-text">{error}</p>}
+
+        <label className="input-label">Username</label>
         <input
           type="text"
           name="username"
-          placeholder="Username"
+          placeholder="Enter username"
           value={username}
           onChange={handleChange}
-          className="w-full p-2 mb-4 border rounded"
+          className="input-field"
           required
         />
-        <br />
-        <br />
-        <label htmlFor="username">Enter Email Addres:</label>
-        <br />
+
+        <label className="input-label">Email</label>
         <input
           type="email"
           name="email"
-          placeholder="Email"
+          placeholder="Enter email"
           value={email}
           onChange={handleChange}
-          className="w-full p-2 mb-4 border rounded"
+          className="input-field"
           required
         />
-        <br />
-        <br />
-        <label htmlFor="username">Enter Password:</label>
-        <br />
+
+        <label className="input-label">Password</label>
         <input
           type="password"
           name="password"
-          placeholder="Password"
+          placeholder="Enter password"
           value={password}
           onChange={handleChange}
-          className="w-full p-2 mb-4 border rounded"
+          className="input-field"
           required
         />
-        <br />
-        <br />
-        <label htmlFor="username">Enter First Name:</label>
-        <br />
+
+        <label className="input-label">First Name</label>
         <input
           type="text"
           name="name"
-          placeholder="First Name"
+          placeholder="Enter first name"
           value={name}
           onChange={handleChange}
-          className="w-full p-2 mb-4 border rounded"
+          className="input-field"
           required
         />
-        <br />
-        <br />
-        <label htmlFor="username">Enter Last Name:</label>
-        <br />
+
+        <label className="input-label">Surname</label>
         <input
           type="text"
           name="surname"
-          placeholder="Surname"
+          placeholder="Enter surname"
           value={surname}
           onChange={handleChange}
-          className="w-full p-2 mb-4 border rounded"
+          className="input-field"
           required
         />
-        <br />
-        <br />
-        <label htmlFor="username">Enter Phone Number:</label>
-        <br />
+
+        <label className="input-label">Phone Number</label>
         <input
           type="text"
           name="cellNumber"
-          placeholder="Cell Number"
+          placeholder="Enter cell number"
           value={cellNumber}
           onChange={handleChange}
-          className="w-full p-2 mb-6 border rounded"
+          className="input-field"
           required
         />
-        <br />
-        <br />
-        <button
-          type="submit"
-          className={`w-full p-2 bg-blue-500 text-white font-bold rounded ${
-            loading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-          disabled={loading}
-        >
+
+        <button type="submit" className="auth-btn" disabled={loading}>
           {loading ? "Registering..." : "Register"}
         </button>
-        <br />
-        <br />
-        <p className="mt-4 text-center text-gray-600">
+
+        <p className="switch-text">
           Already have an account?{" "}
-          <span
-            className="text-blue-500 cursor-pointer"
-            onClick={() => navigate("/login")}
-          >
+          <span className="switch-link" onClick={() => navigate("/login")}>
             Login
           </span>
         </p>

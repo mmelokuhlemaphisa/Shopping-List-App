@@ -3,13 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../store";
 import { loginUser } from "../features/LoginSlice";
 import { useNavigate } from "react-router-dom";
+import "../App.css"; // <-- import styles
 
 const Login: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { loading, error, token } = useSelector(
-    (state: RootState) => state.login
-  );
+  const { loading, error } = useSelector((state: RootState) => state.login);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -26,56 +25,45 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded shadow-md w-full max-w-md"
-      >
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+    <div className="login-container">
+      <div className="overlay"></div>
 
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        <br />
-        <label htmlFor="username">Username:</label>
-        <br />
+      <form onSubmit={handleSubmit} className="login-card">
+        <h2 className="login-title">Welcome Back 👋</h2>
+
+        {error && <p className="error-text">{error}</p>}
+
+        <label htmlFor="username" className="input-label">
+          Username
+        </label>
         <input
           type="text"
-          placeholder="Username"
+          placeholder="Enter your username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className="w-full p-2 mb-4 border rounded"
+          className="input-field"
           required
         />
-        <br />
-        <br />
-        <label htmlFor="password">Password:</label>
-        <br />
+
+        <label htmlFor="password" className="input-label">
+          Password
+        </label>
         <input
           type="password"
-          placeholder="Password"
+          placeholder="Enter your password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 mb-6 border rounded"
+          className="input-field"
           required
         />
-        <br />
-        <br />
-        <button
-          type="submit"
-          className={`w-full p-2 bg-blue-500 text-white font-bold rounded ${
-            loading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-          disabled={loading}
-        >
+
+        <button type="submit" className="login-btn" disabled={loading}>
           {loading ? "Logging in..." : "Login"}
         </button>
-<br />
-<br />
-        <p className="mt-4 text-center text-gray-600">
-          Don't have an account?{" "}
-          <span
-            className="text-blue-500 cursor-pointer"
-            onClick={() => navigate("/register")}
-          >
+
+        <p className="register-text">
+          Don’t have an account?{" "}
+          <span className="register-link" onClick={() => navigate("/register")}>
             Register
           </span>
         </p>
