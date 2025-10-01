@@ -11,12 +11,6 @@ body,
   height: 100%;
 }
 
-
-#root {
-
-}
-
-/* Full-page container */
 .login-container {
   position: relative;
   min-height: 100vh;
@@ -26,9 +20,7 @@ body,
   background: url("https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1600&q=80");
   background-repeat: no-repeat;
   background-size: cover;
-   
 }
-
 
 .overlay {
   position: absolute;
@@ -38,7 +30,6 @@ body,
   height: 100%;
   background: rgba(0, 0, 0, 0.6);
 }
-
 
 .login-card {
   position: relative;
@@ -51,7 +42,6 @@ body,
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
-/* Title */
 .login-title {
   font-size: 2rem;
   font-weight: bold;
@@ -60,7 +50,6 @@ body,
   color: #333;
 }
 
-/* Labels */
 .input-label {
   display: block;
   margin-bottom: 0.5rem;
@@ -68,7 +57,6 @@ body,
   color: #444;
 }
 
-/* Inputs */
 .input-field {
   width: 100%;
   padding: 12px;
@@ -84,7 +72,6 @@ body,
   border-color: #4a90e2;
 }
 
-/* Button */
 .login-btn {
   width: 100%;
   padding: 12px;
@@ -108,7 +95,6 @@ body,
   cursor: not-allowed;
 }
 
-/* Error message */
 .error-text {
   color: red;
   text-align: center;
@@ -116,7 +102,6 @@ body,
   font-weight: 500;
 }
 
-/* Register text */
 .register-text {
   margin-top: 1rem;
   text-align: center;
@@ -134,7 +119,6 @@ body,
   color: #2c5aa0;
 }
 
-/* Same full background as login */
 .auth-container {
   position: relative;
   min-height: 100vh;
@@ -151,7 +135,6 @@ body,
   background: rgba(0, 0, 0, 0.65);
 }
 
-/* Card */
 .auth-card {
   position: relative;
   z-index: 1;
@@ -163,7 +146,6 @@ body,
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
-/* Title */
 .auth-title {
   font-size: 2rem;
   font-weight: 800;
@@ -172,7 +154,6 @@ body,
   color: #222;
 }
 
-/* Labels */
 .input-label {
   display: block;
   font-weight: 600;
@@ -180,7 +161,6 @@ body,
   color: #333;
 }
 
-/* Inputs */
 .input-field {
   width: 100%;
   padding: 12px;
@@ -196,7 +176,6 @@ body,
   border-color: #4a90e2;
 }
 
-/* Button */
 .auth-btn {
   width: 100%;
   padding: 12px;
@@ -220,7 +199,6 @@ body,
   cursor: not-allowed;
 }
 
-/* Error */
 .error-text {
   color: red;
   text-align: center;
@@ -228,7 +206,6 @@ body,
   font-weight: 500;
 }
 
-/* Switch text */
 .switch-text {
   margin-top: 1rem;
   text-align: center;
@@ -244,4 +221,6 @@ body,
 .switch-link:hover {
   text-decoration: underline;
 }
+
+
 

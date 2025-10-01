@@ -23,7 +23,6 @@ const initialState: RegisterState = {
   error: null,
 };
 
-// Define a separate type for the user registration payload
 export interface RegisterPayload {
   username: string;
   password: string;
@@ -33,7 +32,6 @@ export interface RegisterPayload {
   cellNumber: string;
 }
 
-// Update async thunk to use RegisterPayload
 export const registerUser = createAsyncThunk(
   "register/registerUser",
   async (userData: RegisterPayload, { rejectWithValue }) => {
@@ -45,7 +43,6 @@ export const registerUser = createAsyncThunk(
     }
   }
 );
-
 
 export const registerSlice = createSlice({
   name: "register",

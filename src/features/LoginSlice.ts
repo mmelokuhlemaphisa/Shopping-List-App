@@ -2,17 +2,19 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Payload for login
 export interface LoginPayload {
   username: string;
   password: string;
 }
 
-// Slice state
 export interface LoginState {
+  id?: string;
   username: string;
   password: string;
   email: string;
+  name?: string;
+  surname?: string;
+  cellNumber?: string;
   loading: boolean;
   error: string | null;
   token?: string;
@@ -22,21 +24,21 @@ const initialState: LoginState = {
   username: "",
   password: "",
   email: "",
+  name: "",
+  surname: "",
+  cellNumber: "",
   loading: false,
   error: null,
   token: undefined,
 };
 
-// Async thunk for login
 export const loginUser = createAsyncThunk(
   "login/loginUser",
   async (userData: LoginPayload, { rejectWithValue }) => {
     try {
-      // Fetch all users
       const response = await axios.get("http://localhost:3000/user");
       const users = response.data as LoginState[];
 
-      // Check credentials
       const user = users.find(
         (u) =>
           u.username === userData.username && u.password === userData.password
@@ -46,14 +48,19 @@ export const loginUser = createAsyncThunk(
         return rejectWithValue("Invalid username or password");
       }
 
-      // Return user data
-      return { username: user.username, email: user.email };
+      return {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        name: user.name,
+        surname: user.surname,
+        cellNumber: user.cellNumber,
+      };
     } catch (err: any) {
       return rejectWithValue("Login failed");
     }
   }
 );
-
 
 export const loginSlice = createSlice({
   name: "login",
@@ -63,6 +70,10 @@ export const loginSlice = createSlice({
       state.token = undefined;
       state.username = "";
       state.email = "";
+      state.id = undefined;
+      state.name = "";
+      state.surname = "";
+      state.cellNumber = "";
     },
   },
   extraReducers: (builder) => {
@@ -75,7 +86,11 @@ export const loginSlice = createSlice({
         state.loading = false;
         state.username = action.payload.username;
         state.email = action.payload.email;
-        state.token = action.payload.token;
+        state.name = action.payload.name;
+        state.surname = action.payload.surname;
+        state.cellNumber = action.payload.cellNumber;
+        state.id = action.payload.id;
+        state.token = "dummy-token";
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;

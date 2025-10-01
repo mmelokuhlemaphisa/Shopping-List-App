@@ -1,7 +1,7 @@
 import React, { useState, type FormEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../store";
-import { loginUser } from "../features/LoginSlice";
+import {loginUser} from "../features/LoginSlice";
 import { useNavigate } from "react-router-dom";
 import "../App.css"; // <-- import styles
 

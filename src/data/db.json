@@ -17,6 +17,25 @@
       "name": "msizi",
       "surname": "mwelase",
       "cellNumber": "3"
+    },
+    {
+      "id": "3f99",
+      "username": "Thabiso",
+      "password": "12345",
+      "email": "21903136@dut4life.ac.za",
+      "name": "thabiso",
+      "surname": "mabaso",
+      "cellNumber": "123456789"
+    },
+    {
+      "username": "Shantela",
+      "email": "snenhlanhlamagubane99@gmail.com",
+      "name": "Shantela",
+      "surname": "Noyila",
+      "cellNumber": "1234567890",
+      "id": "3d43",
+      "loading": false,
+      "error": null
     }
   ]
 }
