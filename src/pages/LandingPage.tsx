@@ -2,6 +2,7 @@ import React from "react";
 import NavBar from "../components/Navbar";
 import Footer from "../components/Footer";
 import shopping from "../assets/shopping.jpg";
+import { Link } from "react-router";
 
 const LandingPage: React.FC = () => {
   return (
@@ -16,7 +17,11 @@ const LandingPage: React.FC = () => {
             Keep track of your shopping items, categories, quantities, and notes
             all in one place.
           </p>
+
+          <Link to="/">
           <button className="cta-button">Get Started</button>
+          </Link>
+
         </div>
         <div className="hero-image">
           <img src={shopping} alt="Shopping illustration" />

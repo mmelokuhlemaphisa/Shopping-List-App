@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../store";
 import {
   addItem,
+  updateItem,
   deleteItem,
   setSearch,
   setSort,
@@ -17,12 +18,16 @@ const ShoppingList: React.FC = () => {
   );
 
   const [form, setForm] = useState({
+    id: "",
     name: "",
     quantity: 1,
     notes: "",
     category: "",
     image: "",
   });
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   // Filter + sort logic
   const filtered = items
@@ -39,26 +44,62 @@ const ShoppingList: React.FC = () => {
       return 0;
     });
 
-  const handleAdd = () => {
+  const handleAddOrUpdate = () => {
     if (!form.name.trim()) return;
-    const newItem: ShoppingItem = {
-      id: uuidv4(),
-      name: form.name,
-      quantity: form.quantity,
-      notes: form.notes,
-      category: form.category,
-      image: form.image,
-      dateAdded: new Date().toISOString(),
-    };
-    dispatch(addItem(newItem));
-    setForm({ name: "", quantity: 1, notes: "", category: "", image: "" });
+
+    if (isEditing) {
+      dispatch(updateItem({ ...form, dateAdded: new Date().toISOString() }));
+    } else {
+      const newItem: ShoppingItem = {
+        id: uuidv4(),
+        name: form.name,
+        quantity: form.quantity,
+        notes: form.notes,
+        category: form.category,
+        image: form.image,
+        dateAdded: new Date().toISOString(),
+      };
+      dispatch(addItem(newItem));
+    }
+
+    setForm({
+      id: "",
+      name: "",
+      quantity: 1,
+      notes: "",
+      category: "",
+      image: "",
+    });
+    setModalOpen(false);
+    setIsEditing(false);
+  };
+
+  const handleEdit = (item: ShoppingItem) => {
+    setForm({
+      id: item.id,
+      name: item.name,
+      quantity: item.quantity,
+      notes: item.notes ?? "",
+      category: item.category,
+      image: item.image ?? "",
+    }); // pre-fill modal with item data
+    setModalOpen(true);
+    setIsEditing(true);
   };
 
   return (
     <div className="shopping-list">
-      <h2 className="shopping-title">My Shopping List</h2>
+      <button className="form-button" onClick={() => setModalOpen(true)}>
+        Add New Item
+      </button>
 
-      {/* Search + Sort */}
+      {items.length === 0 && (
+        <p style={{ margin: "10px 0" }}>
+          You currently have no items. Click "Add New Item" to start your
+          shopping list!
+        </p>
+      )}
+
       <div className="search-sort">
         <input
           type="text"
@@ -83,49 +124,75 @@ const ShoppingList: React.FC = () => {
         </select>
       </div>
 
-      {/* Add Item Form */}
-      <div className="shopping-form">
-        <input
-          type="text"
-          placeholder="Item Name"
-          className="form-input"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
-        <input
-          type="number"
-          placeholder="Quantity"
-          className="form-input"
-          value={form.quantity}
-          onChange={(e) =>
-            setForm({ ...form, quantity: Number(e.target.value) })
-          }
-        />
-        <input
-          type="text"
-          placeholder="Notes (optional)"
-          className="form-input"
-          value={form.notes}
-          onChange={(e) => setForm({ ...form, notes: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Category"
-          className="form-input"
-          value={form.category}
-          onChange={(e) => setForm({ ...form, category: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Image URL (optional)"
-          className="form-input"
-          value={form.image}
-          onChange={(e) => setForm({ ...form, image: e.target.value })}
-        />
-        <button className="form-button" onClick={handleAdd}>
-          Add Item
-        </button>
-      </div>
+      {/* Modal */}
+      {modalOpen && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>{isEditing ? "Edit Item" : "Add New Item"}</h3>
+            <div className="shopping-form">
+              <input
+                type="text"
+                placeholder="Item Name"
+                className="form-input"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+              />
+              <input
+                type="number"
+                placeholder="Quantity"
+                className="form-input"
+                value={form.quantity}
+                onChange={(e) =>
+                  setForm({ ...form, quantity: Number(e.target.value) })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Notes (optional)"
+                className="form-input"
+                value={form.notes}
+                onChange={(e) => setForm({ ...form, notes: e.target.value })}
+              />
+              <input
+                type="text"
+                placeholder="Category"
+                className="form-input"
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+              />
+              <input
+                type="text"
+                placeholder="Image URL (optional)"
+                className="form-input"
+                value={form.image}
+                onChange={(e) => setForm({ ...form, image: e.target.value })}
+              />
+              <div className="modal-buttons">
+                <button className="form-button" onClick={handleAddOrUpdate}>
+                  {isEditing ? "Update Item" : "Add Item"}
+                </button>
+                <button
+                  className="form-button"
+                  onClick={() => {
+                    setModalOpen(false);
+                    setIsEditing(false);
+                    setForm({
+                      id: "",
+                      name: "",
+                      quantity: 1,
+                      notes: "",
+                      category: "",
+                      image: "",
+                    });
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Items List */}
       <ul className="items-list">
@@ -142,12 +209,17 @@ const ShoppingList: React.FC = () => {
                 <img src={item.image} alt={item.name} className="item-image" />
               )}
             </div>
-            <button
-              className="delete-button"
-              onClick={() => dispatch(deleteItem(item.id))}
-            >
-              Delete
-            </button>
+            <div className="item-actions">
+              <button className="form-button" onClick={() => handleEdit(item)}>
+                Edit
+              </button>
+              <button
+                className="delete-button"
+                onClick={() => dispatch(deleteItem(item.id))}
+              >
+                Delete
+              </button>
+            </div>
           </li>
         ))}
       </ul>

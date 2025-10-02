@@ -1,11 +1,34 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Footer: React.FC = () => {
   return (
     <footer className="footer">
-      <p className="footer-text">
-        © {new Date().getFullYear()} Shopping Manager. All rights reserved.
-      </p>
+      <div className="footer-content">
+        {/* Left Section */}
+        <div className="footer-left">
+          <p className="footer-text">
+            © {new Date().getFullYear()} Shopping Manager. All rights reserved.
+          </p>
+          <p className="footer-text">Designed by M Maphisa</p>
+        </div>
+
+        {/* Right Section - Links */}
+        <div className="footer-links">
+          <Link to="/contact" className="footer-text">
+            Contact Us
+          </Link>
+          <Link to="/privacy" className="footer-text">
+            Privacy Policy
+          </Link>
+          <Link to="/terms" className="footer-text">
+            Terms of Service
+          </Link>
+          <Link to="/about" className="footer-text">
+            About Us
+          </Link>
+        </div>
+      </div>
     </footer>
   );
 };

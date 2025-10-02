@@ -13,7 +13,7 @@ const Home: React.FC = () => {
       <main className="main-content">
     
         <section className="welcome-section">
-          <h1 className="welcome-title">Welcome to Shopping Manager!</h1>
+          <h1 className="welcome-title">Welcome to ShopMate!</h1>
           <p className="welcome-text">
             Organize your shopping items, keep track of categories, quantities,
             and notes all in one place.
