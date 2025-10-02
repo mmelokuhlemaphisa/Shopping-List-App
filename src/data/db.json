@@ -6,8 +6,10 @@
       "password": "123456",
       "email": "melokuhlemaphisa99@gmail.com",
       "name": "Melokuhle",
-      "surname": "Maphisa",
-      "cellNumber": "0649581777"
+      "surname": "Buthelezi",
+      "cellNumber": "0649581777",
+      "loading": false,
+      "error": null
     },
     {
       "id": "f384",

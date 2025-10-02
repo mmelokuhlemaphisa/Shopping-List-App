@@ -5,12 +5,15 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import ProtectedRoute from "./pages/ProtectedRoute";
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/landing" element={<LandingPage />} />
+      
       <Route path="/" element={<Home />} />
       <Route path="/profile" element={
           <ProtectedRoute>
