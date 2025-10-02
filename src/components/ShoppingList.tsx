@@ -8,13 +8,14 @@ import {
   setSearch,
   setSort,
   type ShoppingItem,
-} from "../features/ShoppingListSlice";
+  type ShoppingListState,
+} from "../features/ShoppingList";
 import { v4 as uuidv4 } from "uuid";
 
 const ShoppingList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { items, search, sort } = useSelector(
-    (state: RootState) => state.shoppingList
+    (state: RootState) => state.shoppingList as ShoppingListState
   );
 
   const [form, setForm] = useState({
@@ -196,7 +197,7 @@ const ShoppingList: React.FC = () => {
 
       {/* Items List */}
       <ul className="items-list">
-        {filtered.map((item) => (
+        {filtered.map((item: ShoppingItem) => (
           <li key={item.id} className="item-card">
             <div className="item-info">
               <h3 className="item-name">{item.name}</h3>

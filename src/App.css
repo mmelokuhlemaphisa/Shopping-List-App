@@ -66,6 +66,7 @@ body {
   font-size: 0.875rem; /* text-sm */
   border-top: 1px solid #d1d5db;
   margin-top: auto; /* pushes footer to bottom if page is short */
+
 }
 
 /* Footer text */
@@ -947,4 +948,48 @@ body {
 .privacy-section p {
   margin: 0.5rem 0;
   color: #444;
+}
+
+.shopping-board {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+.shopping-card {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 1.2rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease;
+}
+
+.shopping-card:hover {
+  transform: translateY(-4px);
+}
+
+.shopping-card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.8rem;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.4rem;
+}
+
+.shopping-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.shopping-list-item {
+  display: flex;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+
+.shopping-list-item input {
+  margin-right: 0.5rem;
+  cursor: pointer;
 }

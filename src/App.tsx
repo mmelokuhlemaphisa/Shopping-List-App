@@ -8,6 +8,7 @@ import ProtectedRoute from "./pages/ProtectedRoute";
 import LandingPage from "./pages/LandingPage";
 import ContactUs from "./pages/ContactUs";
 import Privacy from "./pages/Privacy";
+import ShoppingList from "./pages/ShoppingList";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
       />
       <Route path="/contact" element={<ContactUs />} />
       <Route path="/privacy" element={<Privacy />} />
+      <Route path="/shopping-list" element={<ShoppingList />} />
     </Routes>
   );
 }

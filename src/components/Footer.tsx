@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
           <p className="footer-text">Designed by M Maphisa</p>
         </div>
 
-        {/* Right Section - Links */}
+       
         <div className="footer-links">
           <Link to="/contact" className="footer-text">
             Contact Us

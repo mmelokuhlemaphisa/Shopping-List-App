@@ -3,7 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import loginReducer from "./src/features/LoginSlice";
 import registerReducer from "./src/features/RegisterSlice";
 import ProfileReducer from "./src/features/ProfileSlice";
-import shoppingListReducer from "./src/features/ShoppingListSlice";
+import shoppingListReducer from "./src/features/ShoppingList";
 
 export const store = configureStore({
   reducer: {

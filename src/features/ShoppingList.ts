@@ -1,5 +1,9 @@
 // src/features/shoppingListSlice.ts
-import { createSlice, createAsyncThunk,type  PayloadAction } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createAsyncThunk,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
 
 // Define item type
@@ -13,7 +17,7 @@ export interface ShoppingItem {
   dateAdded: string;
 }
 
-interface ShoppingListState {
+export interface ShoppingListState {
   items: ShoppingItem[];
   loading: boolean;
   error: string | null;
