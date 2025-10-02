@@ -16,7 +16,9 @@
       "email": "saass@gmail.com",
       "name": "msizi",
       "surname": "mwelase",
-      "cellNumber": "3"
+      "cellNumber": "345678",
+      "loading": false,
+      "error": null
     },
     {
       "id": "3f99",
@@ -26,16 +28,6 @@
       "name": "thabiso",
       "surname": "mabaso",
       "cellNumber": "123456789"
-    },
-    {
-      "username": "Shantela",
-      "email": "snenhlanhlamagubane99@gmail.com",
-      "name": "Shantela",
-      "surname": "Noyila",
-      "cellNumber": "1234567890",
-      "id": "3d43",
-      "loading": false,
-      "error": null
     }
   ]
 }

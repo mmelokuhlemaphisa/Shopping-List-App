@@ -34,8 +34,8 @@ const Profile: React.FC = () => {
 
   // Update formData when profile data changes
   useEffect(() => {
-    setFormData({ username, email, name, surname, cellNumber });
-  }, [username, email, name, surname, cellNumber]);
+    setFormData({ username,  email, name, surname, cellNumber });
+  }, [username,  email, name, surname, cellNumber]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -74,15 +74,20 @@ const Profile: React.FC = () => {
             <p>
               <strong>Username:</strong> {username}
             </p>
+            <br />
+            
             <p>
               <strong>Email:</strong> {email}
             </p>
+            <br />
             <p>
               <strong>Name:</strong> {name}
             </p>
+            <br />
             <p>
               <strong>Surname:</strong> {surname}
             </p>
+            <br />
             <p>
               <strong>Cell Number:</strong> {cellNumber}
             </p>
@@ -103,6 +108,8 @@ const Profile: React.FC = () => {
               onChange={handleChange}
               className="w-full p-2 mb-4 border rounded"
             />
+            <br />
+        
             <input
               type="email"
               name="email"
@@ -110,6 +117,7 @@ const Profile: React.FC = () => {
               onChange={handleChange}
               className="w-full p-2 mb-4 border rounded"
             />
+            <br />
             <input
               type="text"
               name="name"
@@ -117,6 +125,8 @@ const Profile: React.FC = () => {
               onChange={handleChange}
               className="w-full p-2 mb-4 border rounded"
             />
+            <br />
+
             <input
               type="text"
               name="surname"
@@ -124,6 +134,8 @@ const Profile: React.FC = () => {
               onChange={handleChange}
               className="w-full p-2 mb-4 border rounded"
             />
+
+            <br />
             <input
               type="text"
               name="cellNumber"

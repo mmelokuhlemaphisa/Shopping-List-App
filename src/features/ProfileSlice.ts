@@ -56,7 +56,7 @@ export const updateProfile = createAsyncThunk<
   { rejectValue: string }
 >("profile/updateProfile", async (updatedData, { rejectWithValue }) => {
   try {
-    const response = await axios.put(
+    const response = await axios.patch(
       `http://localhost:3000/user/${updatedData.id}`,
       updatedData
     );
