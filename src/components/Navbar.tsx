@@ -10,9 +10,6 @@ const NavBar: React.FC = () => {
           Home
         </Link>
 
-        <Link to="/shopping" className="nav-link">
-          Shopping List
-        </Link>
         <Link to="/login" className="nav-link">
           Login
         </Link>

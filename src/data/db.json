@@ -30,6 +30,15 @@
       "name": "thabiso",
       "surname": "mabaso",
       "cellNumber": "123456789"
+    },
+    {
+      "id": "a7a3",
+      "username": "sphesihle",
+      "password": "123456",
+      "email": "snenhlanhlamagubane99@gmail.com",
+      "name": "Sphesihle",
+      "surname": "Maphisa",
+      "cellNumber": "1234567"
     }
   ]
 }

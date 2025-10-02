@@ -21,12 +21,7 @@ const Footer: React.FC = () => {
           <Link to="/privacy" className="footer-text">
             Privacy Policy
           </Link>
-          <Link to="/terms" className="footer-text">
-            Terms of Service
-          </Link>
-          <Link to="/about" className="footer-text">
-            About Us
-          </Link>
+          
         </div>
       </div>
     </footer>
