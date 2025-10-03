@@ -148,7 +148,7 @@ const Profile: React.FC = () => {
             </form>
           )}
 
-          <button className="btn secondary" onClick={() => navigate("/")}>
+          <button className="btn secondary" onClick={() => navigate("/home")}>
             Back to Home
           </button>
         </div>

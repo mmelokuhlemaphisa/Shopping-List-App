@@ -16,7 +16,7 @@ const ShoppingListPage: React.FC = () => {
         <ShoppingBoard />
       </main>
 
-      {/* Footer */}
+     
       <Footer />
     </div>
   );

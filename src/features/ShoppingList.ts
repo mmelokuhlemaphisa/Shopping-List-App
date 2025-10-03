@@ -1,3 +1,22 @@
+export const deleteShoppingItem = createAsyncThunk<
+  string,
+  string,
+  { state: RootState }
+>("shoppingList/deleteItem", async (id) => {
+  await axios.delete(`http://localhost:3000/shoppingList/${id}`);
+  return id;
+});
+export const updateShoppingItem = createAsyncThunk<
+  ShoppingItem,
+  ShoppingItem,
+  { state: RootState }
+>("shoppingList/updateItem", async (item) => {
+  const response = await axios.put(
+    `http://localhost:3000/shoppingList/${item.id}`,
+    item
+  );
+  return response.data;
+});
 // src/features/shoppingListSlice.ts
 import {
   createSlice,
@@ -103,6 +122,19 @@ export const shoppingListSlice = createSlice({
       })
       .addCase(addShoppingItem.fulfilled, (state, action) => {
         state.items.push(action.payload);
+      })
+      .addCase(updateShoppingItem.fulfilled, (state, action) => {
+        const index = state.items.findIndex(
+          (i: ShoppingItem) => i.id === action.payload.id
+        );
+        if (index !== -1) {
+          state.items[index] = action.payload;
+        }
+      })
+      .addCase(deleteShoppingItem.fulfilled, (state, action) => {
+        state.items = state.items.filter(
+          (i: ShoppingItem) => i.id !== action.payload
+        );
       });
   },
 });

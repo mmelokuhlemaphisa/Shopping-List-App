@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../store";
 import {
   addShoppingItem,
-  updateItem,
-  deleteItem,
+  updateShoppingItem,
+  deleteShoppingItem,
   setSearch,
   setSort,
   type ShoppingItem,
@@ -59,7 +59,11 @@ const ShoppingList: React.FC = () => {
 
     if (isEditing) {
       dispatch(
-        updateItem({ ...form, dateAdded: new Date().toISOString(), userId })
+        updateShoppingItem({
+          ...form,
+          dateAdded: new Date().toISOString(),
+          userId,
+        })
       );
     } else {
       const newItem: ShoppingItem = {
@@ -228,7 +232,7 @@ const ShoppingList: React.FC = () => {
               </button>
               <button
                 className="delete-button"
-                onClick={() => dispatch(deleteItem(item.id))}
+                onClick={() => dispatch(deleteShoppingItem(item.id))}
               >
                 Delete
               </button>
