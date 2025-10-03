@@ -6,7 +6,7 @@ const NavBar: React.FC = () => {
     <nav className="navbar">
       <h1 className="navbar-title">ShopMate</h1>
       <div className="navbar-links">
-        <Link to="/" className="nav-link">
+        <Link to="/home" className="nav-link">
           Home
         </Link>
         <Link to="/shopping-list" className="nav-link">
@@ -21,7 +21,7 @@ const NavBar: React.FC = () => {
         <Link to="/profile" className="nav-link">
           Profile
         </Link>
-        <Link to="/landing" className="nav-link">
+        <Link to="/" className="nav-link">
           Logout
         </Link>
       </div>

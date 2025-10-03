@@ -18,7 +18,7 @@ const Login: React.FC = () => {
     try {
       await dispatch(loginUser({ username, password })).unwrap();
       alert("Login successful!");
-      navigate("/"); // redirect to home page
+      navigate("/home"); // redirect to home page
     } catch (err) {
       console.error(err);
     }

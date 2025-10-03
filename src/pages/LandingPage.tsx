@@ -1,5 +1,5 @@
 import React from "react";
-import NavBar from "../components/Navbar";
+
 import Footer from "../components/Footer";
 import shopping from "../assets/shopping.jpg";
 import { Link } from "react-router";
@@ -7,7 +7,14 @@ import { Link } from "react-router";
 const LandingPage: React.FC = () => {
   return (
     <div className="landing-page">
-      <NavBar />
+      <nav className="navbar">
+            <h1 className="navbar-title">ShopMate</h1>
+            <div className="navbar-links">
+              
+              
+             
+            </div>
+          </nav>
 
       {/* Hero Section */}
       <section className="hero-section">
@@ -18,7 +25,7 @@ const LandingPage: React.FC = () => {
             all in one place.
           </p>
 
-          <Link to="/">
+          <Link to="/login">
           <button className="cta-button">Get Started</button>
           </Link>
 

@@ -1,44 +1,83 @@
 {
   "user": [
     {
-      "id": "2da7",
+      "id": "48bc",
       "username": "melokuhle",
-      "password": "123456",
+      "password": "U2FsdGVkX1/nU91Foo+SeI7B6rNbgisi9kQMgCmUASk=",
       "email": "melokuhlemaphisa99@gmail.com",
       "name": "Melokuhle",
-      "surname": "Buthelezi",
-      "cellNumber": "0649581777",
-      "loading": false,
-      "error": null
-    },
-    {
-      "id": "f384",
-      "username": "msizi",
-      "password": "123",
-      "email": "saass@gmail.com",
-      "name": "msizi",
-      "surname": "mwelase",
-      "cellNumber": "345678",
-      "loading": false,
-      "error": null
-    },
-    {
-      "id": "3f99",
-      "username": "Thabiso",
-      "password": "12345",
-      "email": "21903136@dut4life.ac.za",
-      "name": "thabiso",
-      "surname": "mabaso",
-      "cellNumber": "123456789"
-    },
-    {
-      "id": "a7a3",
-      "username": "sphesihle",
-      "password": "123456",
-      "email": "snenhlanhlamagubane99@gmail.com",
-      "name": "Sphesihle",
       "surname": "Maphisa",
-      "cellNumber": "1234567"
+      "cellNumber": "0649581777"
+    },
+    {
+      "id": "d093",
+      "username": "zama",
+      "password": "U2FsdGVkX1+5fOx0mNm4P8LPpx6VSwes9Q8lFOCQP4g=",
+      "email": "melokuhlemaphisa99@gmail.com",
+      "name": "Zama",
+      "surname": "Zulu",
+      "cellNumber": "1234567890"
+    },
+    {
+      "id": "e283",
+      "username": "ntombi",
+      "password": "U2FsdGVkX1/M7csJaUfBgqAznQEELVtawTZzTs9Sn70=",
+      "email": "saass@gmail.com",
+      "name": "Ntombenhle",
+      "surname": "Ngcoo",
+      "cellNumber": "2334354663"
+    }
+  ],
+  "shoppingList": [
+    {
+      "id": "c11d9e59-4dff-4f57-9fc9-2290487a2e08",
+      "name": "esgvferf",
+      "quantity": 1,
+      "notes": "rere",
+      "category": "reer",
+      "image": "erer",
+      "dateAdded": "2025-10-03T12:34:40.917Z",
+      "userId": "e283"
+    },
+    {
+      "id": "32a1769f-fcc5-4bca-abe6-f921a0317bb0",
+      "name": "23e23",
+      "quantity": 1,
+      "notes": "24r24",
+      "category": "44",
+      "image": "4r3r",
+      "dateAdded": "2025-10-03T12:35:32.803Z",
+      "userId": "e283"
+    },
+    {
+      "id": "55d16a2b-71bc-4c48-a8e3-0212f9ebff93",
+      "name": "4r",
+      "quantity": 1,
+      "notes": "r4r",
+      "category": "4r43",
+      "image": "r",
+      "dateAdded": "2025-10-03T12:36:06.416Z",
+      "userId": "e283"
+    },
+    {
+      "id": "c68b4c61-4058-4529-a3c9-3e45b633bea0",
+      "name": "2r2",
+      "quantity": 1,
+      "notes": "4r",
+      "category": "4r4",
+      "image": "44r",
+      "dateAdded": "2025-10-03T12:46:03.555Z",
+      "userId": "d093"
+    },
+    {
+      "id": "2b5e7203-f859-4d57-88ba-2250651e8e1e",
+      "name": "4r43r",
+      "quantity": 1,
+      "notes": "4r4r",
+      "category": "r4r",
+      "image": "4r4",
+      "dateAdded": "2025-10-03T12:46:14.811Z",
+      "userId": "d093"
     }
   ]
 }

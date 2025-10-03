@@ -15,6 +15,7 @@ export interface ShoppingItem {
   category: string;
   image?: string; // base64 or url
   dateAdded: string;
+  userId: string;
 }
 
 export interface ShoppingListState {
@@ -33,38 +34,54 @@ const initialState: ShoppingListState = {
   sort: null,
 };
 
-// Async thunks (simulate API if needed)
+// Async thunks for JSON server
+import axios from "axios";
+
 export const fetchShoppingLists = createAsyncThunk<
   ShoppingItem[],
-  void,
+  string,
   { state: RootState }
->("shoppingList/fetchAll", async () => {
-  // in real app, fetch from backend
-  const data: ShoppingItem[] = [];
-  return data;
+>("shoppingList/fetchAll", async (userId) => {
+  const response = await axios.get(
+    `http://localhost:3000/shoppingList?userId=${userId}`
+  );
+  return response.data;
+});
+
+export const addShoppingItem = createAsyncThunk<
+  ShoppingItem,
+  ShoppingItem,
+  { state: RootState }
+>("shoppingList/addItem", async (item) => {
+  const response = await axios.post("http://localhost:3000/shoppingList", item);
+  return response.data;
 });
 
 export const shoppingListSlice = createSlice({
   name: "shoppingList",
   initialState,
   reducers: {
-    addItem: (state, action: PayloadAction<ShoppingItem>) => {
-      state.items.push(action.payload);
-    },
-    updateItem: (state, action: PayloadAction<ShoppingItem>) => {
-      const index = state.items.findIndex((i) => i.id === action.payload.id);
+    updateItem: (
+      state: ShoppingListState,
+      action: PayloadAction<ShoppingItem>
+    ) => {
+      const index = state.items.findIndex(
+        (i: ShoppingItem) => i.id === action.payload.id
+      );
       if (index !== -1) {
         state.items[index] = action.payload;
       }
     },
-    deleteItem: (state, action: PayloadAction<string>) => {
-      state.items = state.items.filter((i) => i.id !== action.payload);
+    deleteItem: (state: ShoppingListState, action: PayloadAction<string>) => {
+      state.items = state.items.filter(
+        (i: ShoppingItem) => i.id !== action.payload
+      );
     },
-    setSearch: (state, action: PayloadAction<string>) => {
+    setSearch: (state: ShoppingListState, action: PayloadAction<string>) => {
       state.search = action.payload;
     },
     setSort: (
-      state,
+      state: ShoppingListState,
       action: PayloadAction<"name" | "category" | "date" | null>
     ) => {
       state.sort = action.payload;
@@ -83,11 +100,14 @@ export const shoppingListSlice = createSlice({
       .addCase(fetchShoppingLists.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch shopping lists";
+      })
+      .addCase(addShoppingItem.fulfilled, (state, action) => {
+        state.items.push(action.payload);
       });
   },
 });
 
-export const { addItem, updateItem, deleteItem, setSearch, setSort } =
+export const { updateItem, deleteItem, setSearch, setSort } =
   shoppingListSlice.actions;
 
 export default shoppingListSlice.reducer;

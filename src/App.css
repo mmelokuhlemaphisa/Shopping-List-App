@@ -11,15 +11,12 @@ body,
   height: 100%;
 }
 
-
 /* Body */
 body {
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: "Inter", Arial, sans-serif;
   background-color: #f9fafb; /* light neutral */
   color: #111827;
- 
 }
-
 
 .container {
   max-width: 1200px;
@@ -37,7 +34,6 @@ body {
 }
 
 .navbar-title {
-
   font-weight: 700;
 }
 
@@ -65,8 +61,8 @@ body {
   padding: 1rem 0;
   font-size: 0.875rem; /* text-sm */
   border-top: 1px solid #d1d5db;
-  margin-top: auto; /* pushes footer to bottom if page is short */
-
+  position: static;
+  width: 100%;
 }
 
 /* Footer text */
@@ -113,8 +109,8 @@ body {
 
 .main-content {
   flex-grow: 1;
-  max-width: 1200px;
-  margin: 0 auto;
+  /* max-width: 1200px;
+  margin: 0 auto; */
   padding: 2rem;
 }
 
@@ -175,11 +171,11 @@ body {
   margin: 0 5px;
 }
 
-
 /* Shopping List Form */
 /* Shopping List */
 .shopping-list {
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
 }
 
 .shopping-title {
@@ -229,7 +225,6 @@ body {
   transform: translateY(0);
 }
 
-
 /* Search + Sort */
 .search-sort {
   display: flex;
@@ -247,25 +242,21 @@ body {
   width: auto;
 }
 
-/* Items List */
 .items-list {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-direction: row;
-
+ display: flex;
+ flex-wrap: wrap; /* allows cards to move to next line */
+ gap: 1rem; /* space between cards */
 }
 
 .item-card {
+  flex: 1 1 250px; /* grow, shrink, min-width 250px */
+  max-width: 300px; /* optional: keep cards from being too wide */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-
   background-color: white;
   border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 2rem;
-  margin-bottom: 1rem;
 }
 
 .item-info {
@@ -326,7 +317,6 @@ body {
     width: 100%;
   }
 }
-
 
 .login-container {
   position: relative;
@@ -539,8 +529,6 @@ body {
   text-decoration: underline;
 }
 
-
-
 /* Layout */
 .flex {
   display: flex;
@@ -550,7 +538,6 @@ body {
 }
 .items-center {
   align-items: center;
-
 }
 .min-h-screen {
   min-height: 100vh;
@@ -651,7 +638,7 @@ body {
 .profile-card {
   background: #fff;
   border-radius: 20px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
   overflow: hidden;
@@ -784,7 +771,7 @@ body {
   border-radius: 1rem;
   margin: 2rem auto;
   max-width: 1200px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px;
 }
 
 .hero-text {
@@ -841,7 +828,6 @@ body {
 .features-section {
   padding: 4rem 2rem;
   text-align: center;
-
 }
 
 .features-grid {
@@ -849,14 +835,14 @@ body {
   gap: 2rem;
   flex-wrap: wrap;
   justify-content: center;
-    margin-top: 5%;
+  margin-top: 5%;
 }
 
 .feature-card {
   background: white;
   padding: 2rem;
   border-radius: 1rem;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   flex: 1 1 250px;
   transition: transform 0.3s ease;
 }
@@ -920,14 +906,16 @@ body {
   margin-bottom: 2rem;
 }
 
-.form-input, .form-textarea {
+.form-input,
+.form-textarea {
   padding: 0.75rem;
   border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 1rem;
 }
 
-.form-input:focus, .form-textarea:focus {
+.form-input:focus,
+.form-textarea:focus {
   outline: none;
   border-color: #2563eb;
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
@@ -958,10 +946,10 @@ body {
 }
 
 .shopping-card {
-  background: #f9fafb;
+  background: lightblue;
   border-radius: 12px;
   padding: 1.2rem;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease;
 }
 
@@ -992,4 +980,18 @@ body {
 .shopping-list-item input {
   margin-right: 0.5rem;
   cursor: pointer;
+}
+
+/* Prevent footer overlap and ensure content fits well on all pages */
+.container,
+.main-content,
+.page-container,
+.shopping-section,
+.home-page,
+.landing-page,
+.page-layout {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 4rem; /* Prevent footer overlap */
+  box-sizing: border-box;
 }

@@ -2,18 +2,27 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../store";
 import {
-  addItem,
+  addShoppingItem,
   updateItem,
   deleteItem,
   setSearch,
   setSort,
   type ShoppingItem,
   type ShoppingListState,
+  fetchShoppingLists,
 } from "../features/ShoppingList";
 import { v4 as uuidv4 } from "uuid";
 
 const ShoppingList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  // Get logged-in userId from login slice
+  const userId = useSelector((state: RootState) => state.login.id);
+  // Fetch items for this user on mount
+  React.useEffect(() => {
+    if (userId) {
+      dispatch(fetchShoppingLists(userId));
+    }
+  }, [dispatch, userId]);
   const { items, search, sort } = useSelector(
     (state: RootState) => state.shoppingList as ShoppingListState
   );
@@ -46,10 +55,12 @@ const ShoppingList: React.FC = () => {
     });
 
   const handleAddOrUpdate = () => {
-    if (!form.name.trim()) return;
+    if (!form.name.trim() || !userId) return;
 
     if (isEditing) {
-      dispatch(updateItem({ ...form, dateAdded: new Date().toISOString() }));
+      dispatch(
+        updateItem({ ...form, dateAdded: new Date().toISOString(), userId })
+      );
     } else {
       const newItem: ShoppingItem = {
         id: uuidv4(),
@@ -59,8 +70,9 @@ const ShoppingList: React.FC = () => {
         category: form.category,
         image: form.image,
         dateAdded: new Date().toISOString(),
+        userId,
       };
-      dispatch(addItem(newItem));
+      dispatch(addShoppingItem(newItem));
     }
 
     setForm({
