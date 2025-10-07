@@ -1203,6 +1203,47 @@ body {
   margin-top: 24px;
   color: #6b7280;
 }
+.no-items {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  margin-top: 20px;
+}
+
+.no-items-content {
+  text-align: center;
+  background-color: powderblue; /* soft yellow background */
+  border: 1px solid powderblue; /* subtle border */
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.no-items-icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 12px;
+  animation: bounce 1s infinite;
+}
+
+/* Bounce Animation */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+.no-items p {
+  font-size: 16px;
+  color: #92400e; /* brownish text for contrast */
+  line-height: 1.4;
+}
+
+
 
 /* Table styling */
 .item-table {

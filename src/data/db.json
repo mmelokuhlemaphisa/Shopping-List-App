@@ -74,6 +74,42 @@
       "dateAdded": "2025-10-07T13:31:45.125Z",
       "userId": "28b4",
       "listId": "c678b9d3-7a6d-4603-855a-32459b2b1483"
+    },
+    {
+      "id": "d0ef053f-49f3-48e2-8f14-f2a3ed9d0445",
+      "name": "fsetrse",
+      "quantity": 0,
+      "notes": "retre",
+      "category": "Food",
+      "image": "retet",
+      "status": "Purchased",
+      "dateAdded": "2025-10-07T14:25:30.487Z",
+      "userId": "28b4",
+      "listId": "2142d2d5-69d7-4080-bdd5-d67a2d056af4"
+    },
+    {
+      "id": "e13863a2-8cb2-48ea-a32a-d2d1098c61f5",
+      "name": "rjsr",
+      "quantity": 1,
+      "notes": "yy",
+      "category": "Drinks",
+      "image": "yjyjyt",
+      "status": "Out of Stock",
+      "dateAdded": "2025-10-07T14:39:51.794Z",
+      "userId": "28b4",
+      "listId": "2142d2d5-69d7-4080-bdd5-d67a2d056af4"
+    },
+    {
+      "id": "33f3eca5-f255-46b6-898a-0bd57bc22752",
+      "name": "refertfer",
+      "quantity": 3,
+      "notes": "regeg",
+      "category": "Decoration",
+      "image": "gergegreg",
+      "status": "Pending",
+      "dateAdded": "2025-10-07T14:39:42.913Z",
+      "userId": "28b4",
+      "listId": "2142d2d5-69d7-4080-bdd5-d67a2d056af4"
     }
   ]
 }

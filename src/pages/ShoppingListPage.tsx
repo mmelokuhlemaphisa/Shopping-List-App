@@ -270,7 +270,15 @@ const ShoppingListDetails: React.FC = () => {
             </tbody>
           </table>
         ) : (
-          <p>No items added yet for {listInfo.name}. Start adding items!</p>
+          <div className="no-items">
+            <div className="no-items-content">
+              <span className="no-items-icon">🛒</span>
+              <p>
+                No items added yet for <strong>{listInfo.name}</strong>.<br />
+                Start adding items using the Add Items button above!
+              </p>
+            </div>
+          </div>
         )}
       </div>
     </div>
