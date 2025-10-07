@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../store";
 import {
-  addList,
-  deleteShoppingItem,
+  addShoppingList,
+  deleteShoppingList,
+  fetchShoppingLists,
   setSearch,
   setSort,
   type ShoppingListInfo,
@@ -13,10 +14,10 @@ import { v4 as uuidv4 } from "uuid";
 import { Link } from "react-router-dom";
 import "../App.css";
 
-const ShoppingList: React.FC = () => {
+const ShoppingListsDashboard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const userId = useSelector((state: RootState) => state.login.id);
-  const { lists, search, sort } = useSelector(
+  const { lists, search, sort, loading } = useSelector(
     (state: RootState) => state.shoppingList
   );
 
@@ -24,6 +25,11 @@ const ShoppingList: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState("");
+
+  // Fetch shopping lists on mount
+  useEffect(() => {
+    if (userId) dispatch(fetchShoppingLists(userId));
+  }, [dispatch, userId]);
 
   // Filter & sort lists
   const filtered = lists
@@ -38,15 +44,16 @@ const ShoppingList: React.FC = () => {
       return 0;
     });
 
-  const handleAddOrUpdate = () => {
+  // Add or update list
+  const handleAddOrUpdate = async () => {
     if (!form.name.trim() || !userId) return;
 
     if (isEditing) {
-      const updatedList: ShoppingListInfo = {
-        ...lists.find((l) => l.listId === editId)!,
-        ...form,
-      };
-      dispatch(addList(updatedList)); // temporary simple update
+      // Simple local update (backend update optional)
+      const index = lists.findIndex((l) => l.listId === editId);
+      if (index !== -1) {
+        lists[index] = { ...lists[index], ...form };
+      }
     } else {
       const newList: ShoppingListInfo = {
         listId: uuidv4(),
@@ -54,9 +61,9 @@ const ShoppingList: React.FC = () => {
         category: form.category,
         userId,
         dateAdded: new Date().toISOString(),
-        image: form.image,
+        image: form.image || "",
       };
-      dispatch(addList(newList));
+      await dispatch(addShoppingList(newList));
     }
 
     setModalOpen(false);
@@ -65,6 +72,7 @@ const ShoppingList: React.FC = () => {
     setForm({ name: "", category: "", image: "" });
   };
 
+  // Edit a list
   const handleEdit = (list: ShoppingListInfo) => {
     setForm({
       name: list.name,
@@ -76,17 +84,26 @@ const ShoppingList: React.FC = () => {
     setEditId(list.listId);
   };
 
+  // Delete a list
+  const handleDelete = (listId: string) => {
+    if (window.confirm("Are you sure you want to delete this list?")) {
+      dispatch(deleteShoppingList(listId));
+    }
+  };
+
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
         <h2>My Shopping Lists</h2>
-        <div>
+        <div className="dashboard-controls">
           <input
             type="text"
             placeholder="Search lists..."
             value={search}
             onChange={(e) => dispatch(setSearch(e.target.value))}
+            className="search-input"
           />
+
           <select
             value={sort || ""}
             onChange={(e) =>
@@ -94,16 +111,21 @@ const ShoppingList: React.FC = () => {
                 setSort(e.target.value as "name" | "category" | "date" | null)
               )
             }
+            className="sort-select"
           >
             <option value="">Sort By</option>
             <option value="name">Name</option>
             <option value="category">Category</option>
             <option value="date">Date Added</option>
           </select>
-          <button onClick={() => setModalOpen(true)}>Add List</button>
+
+          <button onClick={() => setModalOpen(true)} className="add-list-btn">
+            Add List
+          </button>
         </div>
       </div>
 
+      {/* Modal */}
       {modalOpen && (
         <div className="modal-backdrop">
           <div className="modal-content">
@@ -143,34 +165,45 @@ const ShoppingList: React.FC = () => {
         </div>
       )}
 
+      {/* List Grid */}
       <div className="list-grid">
-        {filtered.map((list) => (
-          <div key={list.listId} className="list-card">
-            <img
-              src={list.image || "https://via.placeholder.com/150"}
-              alt={list.name}
-              className="item-image"
-            />
-            <div className="list-info">
-              <h3>{list.name}</h3>
-              <p>Category: {list.category}</p>
-              <p className="date-added">
-                Added: {new Date(list.dateAdded).toLocaleDateString()}
-              </p>
-              <div className="list-buttons">
-                <Link to={`/shopping-list/${list.listId}`}>
-                  <button>View</button>
-                </Link>
-                <button onClick={() => handleEdit(list)}>Edit</button>
+        {loading ? (
+          <p>Loading lists...</p>
+        ) : filtered.length === 0 ? (
+          <p>No shopping lists yet.</p>
+        ) : (
+          filtered.map((list) => (
+            <div key={list.listId} className="list-card">
+              <img
+                src={list.image || "https://via.placeholder.com/150"}
+                alt={list.name}
+                className="item-image"
+              />
+              <div className="list-info">
+                <h3>{list.name}</h3>
+                <p>Category: {list.category}</p>
+                <p className="date-added">
+                  Added: {new Date(list.dateAdded).toLocaleDateString()}
+                </p>
+                <div className="list-buttons">
+                  <Link to={`/shopping-list/${list.listId}`}>
+                    <button>View</button>
+                  </Link>
+                  <button onClick={() => handleEdit(list)}>Edit</button>
+                  <button
+                    style={{ backgroundColor: "#dc2626", color: "white" }}
+                    onClick={() => handleDelete(list.listId)}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
-
-      {filtered.length === 0 && <p>No shopping lists yet.</p>}
     </div>
   );
 };
 
-export default ShoppingList;
+export default ShoppingListsDashboard;

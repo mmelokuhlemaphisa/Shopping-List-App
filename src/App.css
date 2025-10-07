@@ -54,20 +54,32 @@ body {
 }
 
 /* Footer */
+/* Make the page container fill the viewport height */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* full height of viewport */
+}
+
+/* Main content grows to fill space */
+.content {
+  flex: 1;
+  padding: 1rem;
+}
+
+/* Footer styling */
 .footer {
   background-color: #2563eb; /* blue background */
-  color: white; /* white text */
+  color: white;
   text-align: center;
   padding: 1rem 0;
-  font-size: 0.875rem; /* text-sm */
+  font-size: 0.875rem;
   border-top: 1px solid #d1d5db;
-  position: static;
-  width: 100%;
 }
 
 /* Footer text */
 .footer-text {
-  margin: 0.25rem 0; /* small spacing between lines */
+  margin: 0.25rem 0;
   font-size: large;
   text-decoration: none;
   color: white;
@@ -78,7 +90,7 @@ body {
   color: #93c5fd; /* lighter blue on hover */
 }
 
-/* Container inside footer for layout */
+/* Footer layout */
 .footer-content {
   display: flex;
   flex-direction: column;
@@ -87,12 +99,6 @@ body {
   gap: 0.5rem;
 }
 
-/* Left section (copyright + name) */
-.footer-left {
-  text-align: center;
-}
-
-/* Right section (links) */
 .footer-links {
   display: flex;
   gap: 1rem;
@@ -226,11 +232,12 @@ body {
 } */
 
 /* Search + Sort */
-/* .search-sort {
+.search-sort {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+  border-radius: 10px;
 }
 
 .search-input {
@@ -242,7 +249,7 @@ body {
   width: auto;
 }
 
-.items-list {
+/* .items-list {
  display: flex;
  flex-wrap: wrap; 
  gap: 1rem; 
@@ -1017,6 +1024,12 @@ body {
   font-weight: bold;
 }
 
+.dashboard-controls{
+  display: flex;
+  gap: 12px;
+}
+
+
 .dashboard-controls input,
 .dashboard-controls select {
   padding: 8px 12px;
@@ -1026,12 +1039,15 @@ body {
 }
 
 .dashboard-controls button {
+  
   padding: 8px 16px;
   background-color: #22c55e;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+ 
+  transition: background-color 0.2s ease-in-out;
 }
 
 .dashboard-controls button:hover {
