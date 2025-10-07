@@ -1,50 +1,34 @@
-import React, { useState } from "react";
+// src/components/ShoppingListsDashboard.tsx
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../store";
 import {
-  addShoppingItem,
-  updateShoppingItem,
+  addList,
   deleteShoppingItem,
   setSearch,
   setSort,
-  type ShoppingItem,
-  type ShoppingListState,
-  fetchShoppingLists,
+  type ShoppingListInfo,
 } from "../features/ShoppingList";
 import { v4 as uuidv4 } from "uuid";
+import { Link } from "react-router-dom";
+import "../App.css";
 
 const ShoppingList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  // Get logged-in userId from login slice
   const userId = useSelector((state: RootState) => state.login.id);
-  // Fetch items for this user on mount
-  React.useEffect(() => {
-    if (userId) {
-      dispatch(fetchShoppingLists(userId));
-    }
-  }, [dispatch, userId]);
-  const { items, search, sort } = useSelector(
-    (state: RootState) => state.shoppingList as ShoppingListState
+  const { lists, search, sort } = useSelector(
+    (state: RootState) => state.shoppingList
   );
 
-  const [form, setForm] = useState({
-    id: "",
-    name: "",
-    quantity: 1,
-    notes: "",
-    category: "",
-    image: "",
-  });
-
+  const [form, setForm] = useState({ name: "", category: "", image: "" });
   const [modalOpen, setModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [editId, setEditId] = useState("");
 
-  // Filter + sort logic
-  const filtered = items
-    .filter((i: ShoppingItem) =>
-      i.name.toLowerCase().includes(search.toLowerCase())
-    )
-    .sort((a: ShoppingItem, b: ShoppingItem) => {
+  // Filter & sort lists
+  const filtered = lists
+    .filter((l) => l.name.toLowerCase().includes(search.toLowerCase()))
+    .sort((a, b) => {
       if (sort === "name") return a.name.localeCompare(b.name);
       if (sort === "category") return a.category.localeCompare(b.category);
       if (sort === "date")
@@ -58,188 +42,133 @@ const ShoppingList: React.FC = () => {
     if (!form.name.trim() || !userId) return;
 
     if (isEditing) {
-      dispatch(
-        updateShoppingItem({
-          ...form,
-          dateAdded: new Date().toISOString(),
-          userId,
-        })
-      );
-    } else {
-      const newItem: ShoppingItem = {
-        id: uuidv4(),
-        name: form.name,
-        quantity: form.quantity,
-        notes: form.notes,
-        category: form.category,
-        image: form.image,
-        dateAdded: new Date().toISOString(),
-        userId,
+      const updatedList: ShoppingListInfo = {
+        ...lists.find((l) => l.listId === editId)!,
+        ...form,
       };
-      dispatch(addShoppingItem(newItem));
+      dispatch(addList(updatedList)); // temporary simple update
+    } else {
+      const newList: ShoppingListInfo = {
+        listId: uuidv4(),
+        name: form.name,
+        category: form.category,
+        userId,
+        dateAdded: new Date().toISOString(),
+        image: form.image,
+      };
+      dispatch(addList(newList));
     }
 
-    setForm({
-      id: "",
-      name: "",
-      quantity: 1,
-      notes: "",
-      category: "",
-      image: "",
-    });
     setModalOpen(false);
     setIsEditing(false);
+    setEditId("");
+    setForm({ name: "", category: "", image: "" });
   };
 
-  const handleEdit = (item: ShoppingItem) => {
+  const handleEdit = (list: ShoppingListInfo) => {
     setForm({
-      id: item.id,
-      name: item.name,
-      quantity: item.quantity,
-      notes: item.notes ?? "",
-      category: item.category,
-      image: item.image ?? "",
-    }); // pre-fill modal with item data
+      name: list.name,
+      category: list.category,
+      image: list.image || "",
+    });
     setModalOpen(true);
     setIsEditing(true);
+    setEditId(list.listId);
   };
 
   return (
-    <div className="shopping-list">
-      <button className="form-button" onClick={() => setModalOpen(true)}>
-        Add New Item
-      </button>
-
-      {items.length === 0 && (
-        <p style={{ margin: "10px 0" }}>
-          You currently have no items. Click "Add New Item" to start your
-          shopping list!
-        </p>
-      )}
-
-      <div className="search-sort">
-        <input
-          type="text"
-          placeholder="Search..."
-          className="form-input search-input"
-          value={search}
-          onChange={(e) => dispatch(setSearch(e.target.value))}
-        />
-        <select
-          className="form-input sort-select"
-          value={sort || ""}
-          onChange={(e) =>
-            dispatch(
-              setSort(e.target.value as "name" | "category" | "date" | null)
-            )
-          }
-        >
-          <option value="">Sort By</option>
-          <option value="name">Name</option>
-          <option value="category">Category</option>
-          <option value="date">Date Added</option>
-        </select>
+    <div className="dashboard-container">
+      <div className="dashboard-header">
+        <h2>My Shopping Lists</h2>
+        <div>
+          <input
+            type="text"
+            placeholder="Search lists..."
+            value={search}
+            onChange={(e) => dispatch(setSearch(e.target.value))}
+          />
+          <select
+            value={sort || ""}
+            onChange={(e) =>
+              dispatch(
+                setSort(e.target.value as "name" | "category" | "date" | null)
+              )
+            }
+          >
+            <option value="">Sort By</option>
+            <option value="name">Name</option>
+            <option value="category">Category</option>
+            <option value="date">Date Added</option>
+          </select>
+          <button onClick={() => setModalOpen(true)}>Add List</button>
+        </div>
       </div>
 
-      {/* Modal */}
       {modalOpen && (
-        <div className="modal-overlay">
+        <div className="modal-backdrop">
           <div className="modal-content">
-            <h3>{isEditing ? "Edit Item" : "Add New Item"}</h3>
-            <div className="shopping-form">
-              <input
-                type="text"
-                placeholder="Item Name"
-                className="form-input"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-              />
-              <input
-                type="number"
-                placeholder="Quantity"
-                className="form-input"
-                value={form.quantity}
-                onChange={(e) =>
-                  setForm({ ...form, quantity: Number(e.target.value) })
-                }
-              />
-              <input
-                type="text"
-                placeholder="Notes (optional)"
-                className="form-input"
-                value={form.notes}
-                onChange={(e) => setForm({ ...form, notes: e.target.value })}
-              />
-              <input
-                type="text"
-                placeholder="Category"
-                className="form-input"
-                value={form.category}
-                onChange={(e) => setForm({ ...form, category: e.target.value })}
-              />
-              <input
-                type="text"
-                placeholder="Image URL (optional)"
-                className="form-input"
-                value={form.image}
-                onChange={(e) => setForm({ ...form, image: e.target.value })}
-              />
-              <div className="modal-buttons">
-                <button className="form-button" onClick={handleAddOrUpdate}>
-                  {isEditing ? "Update Item" : "Add Item"}
-                </button>
-                <button
-                  className="form-button"
-                  onClick={() => {
-                    setModalOpen(false);
-                    setIsEditing(false);
-                    setForm({
-                      id: "",
-                      name: "",
-                      quantity: 1,
-                      notes: "",
-                      category: "",
-                      image: "",
-                    });
-                  }}
-                >
-                  Cancel
-                </button>
-              </div>
+            <h3>{isEditing ? "Edit List" : "Add New List"}</h3>
+            <input
+              type="text"
+              placeholder="List Name"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Category"
+              value={form.category}
+              onChange={(e) => setForm({ ...form, category: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Image URL"
+              value={form.image}
+              onChange={(e) => setForm({ ...form, image: e.target.value })}
+            />
+            <div className="modal-buttons">
+              <button onClick={handleAddOrUpdate}>
+                {isEditing ? "Update" : "Add"}
+              </button>
+              <button
+                onClick={() => {
+                  setModalOpen(false);
+                  setIsEditing(false);
+                }}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Items List */}
-      <ul className="items-list">
-        {filtered.map((item: ShoppingItem) => (
-          <li key={item.id} className="item-card">
-            <div className="item-info">
-              <h3 className="item-name">{item.name}</h3>
-              <p>Quantity: {item.quantity}</p>
-              {item.category && (
-                <p className="item-detail">Category: {item.category}</p>
-              )}
-              {item.notes && <p className="item-detail">Notes: {item.notes}</p>}
-              {item.image && (
-                <img src={item.image} alt={item.name} className="item-image" />
-              )}
+      <div className="list-grid">
+        {filtered.map((list) => (
+          <div key={list.listId} className="list-card">
+            <img
+              src={list.image || "https://via.placeholder.com/150"}
+              alt={list.name}
+              className="item-image"
+            />
+            <div className="list-info">
+              <h3>{list.name}</h3>
+              <p>Category: {list.category}</p>
+              <p className="date-added">
+                Added: {new Date(list.dateAdded).toLocaleDateString()}
+              </p>
+              <div className="list-buttons">
+                <Link to={`/shopping-list/${list.listId}`}>
+                  <button>View</button>
+                </Link>
+                <button onClick={() => handleEdit(list)}>Edit</button>
+              </div>
             </div>
-            <div className="item-actions">
-              <button className="form-button" onClick={() => handleEdit(item)}>
-                Edit
-              </button>
-              <button
-                className="delete-button"
-                onClick={() => dispatch(deleteShoppingItem(item.id))}
-              >
-                Delete
-              </button>
-            </div>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
+
+      {filtered.length === 0 && <p>No shopping lists yet.</p>}
     </div>
   );
 };

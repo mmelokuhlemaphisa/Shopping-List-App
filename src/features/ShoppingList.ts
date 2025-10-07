@@ -1,22 +1,3 @@
-export const deleteShoppingItem = createAsyncThunk<
-  string,
-  string,
-  { state: RootState }
->("shoppingList/deleteItem", async (id) => {
-  await axios.delete(`http://localhost:3000/shoppingList/${id}`);
-  return id;
-});
-export const updateShoppingItem = createAsyncThunk<
-  ShoppingItem,
-  ShoppingItem,
-  { state: RootState }
->("shoppingList/updateItem", async (item) => {
-  const response = await axios.put(
-    `http://localhost:3000/shoppingList/${item.id}`,
-    item
-  );
-  return response.data;
-});
 // src/features/shoppingListSlice.ts
 import {
   createSlice,
@@ -24,6 +5,7 @@ import {
   type PayloadAction,
 } from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
+import axios from "axios";
 
 // Define item type
 export interface ShoppingItem {
@@ -35,10 +17,22 @@ export interface ShoppingItem {
   image?: string; // base64 or url
   dateAdded: string;
   userId: string;
+  listId: string;
+}
+
+// Define list metadata type
+export interface ShoppingListInfo {
+  listId: string;
+  name: string;
+  category: string;
+  userId: string;
+  dateAdded: string;
+  image?: string;
 }
 
 export interface ShoppingListState {
   items: ShoppingItem[];
+  lists: ShoppingListInfo[];
   loading: boolean;
   error: string | null;
   search: string;
@@ -47,15 +41,14 @@ export interface ShoppingListState {
 
 const initialState: ShoppingListState = {
   items: [],
+  lists: [],
   loading: false,
   error: null,
   search: "",
   sort: null,
 };
 
-// Async thunks for JSON server
-import axios from "axios";
-
+// Async thunks for items
 export const fetchShoppingLists = createAsyncThunk<
   ShoppingItem[],
   string,
@@ -76,31 +69,46 @@ export const addShoppingItem = createAsyncThunk<
   return response.data;
 });
 
+export const updateShoppingItem = createAsyncThunk<
+  ShoppingItem,
+  ShoppingItem,
+  { state: RootState }
+>("shoppingList/updateItem", async (item) => {
+  const response = await axios.put(
+    `http://localhost:3000/shoppingList/${item.id}`,
+    item
+  );
+  return response.data;
+});
+
+export const deleteShoppingItem = createAsyncThunk<
+  string,
+  string,
+  { state: RootState }
+>("shoppingList/deleteItem", async (id) => {
+  await axios.delete(`http://localhost:3000/shoppingList/${id}`);
+  return id;
+});
+
 export const shoppingListSlice = createSlice({
   name: "shoppingList",
   initialState,
   reducers: {
-    updateItem: (
-      state: ShoppingListState,
-      action: PayloadAction<ShoppingItem>
-    ) => {
-      const index = state.items.findIndex(
-        (i: ShoppingItem) => i.id === action.payload.id
-      );
-      if (index !== -1) {
-        state.items[index] = action.payload;
-      }
+    addList: (state, action: PayloadAction<ShoppingListInfo>) => {
+      state.lists.push(action.payload);
     },
-    deleteItem: (state: ShoppingListState, action: PayloadAction<string>) => {
-      state.items = state.items.filter(
-        (i: ShoppingItem) => i.id !== action.payload
-      );
+    updateItem: (state, action: PayloadAction<ShoppingItem>) => {
+      const index = state.items.findIndex((i) => i.id === action.payload.id);
+      if (index !== -1) state.items[index] = action.payload;
     },
-    setSearch: (state: ShoppingListState, action: PayloadAction<string>) => {
+    deleteItem: (state, action: PayloadAction<string>) => {
+      state.items = state.items.filter((i) => i.id !== action.payload);
+    },
+    setSearch: (state, action: PayloadAction<string>) => {
       state.search = action.payload;
     },
     setSort: (
-      state: ShoppingListState,
+      state,
       action: PayloadAction<"name" | "category" | "date" | null>
     ) => {
       state.sort = action.payload;
@@ -124,22 +132,16 @@ export const shoppingListSlice = createSlice({
         state.items.push(action.payload);
       })
       .addCase(updateShoppingItem.fulfilled, (state, action) => {
-        const index = state.items.findIndex(
-          (i: ShoppingItem) => i.id === action.payload.id
-        );
-        if (index !== -1) {
-          state.items[index] = action.payload;
-        }
+        const index = state.items.findIndex((i) => i.id === action.payload.id);
+        if (index !== -1) state.items[index] = action.payload;
       })
       .addCase(deleteShoppingItem.fulfilled, (state, action) => {
-        state.items = state.items.filter(
-          (i: ShoppingItem) => i.id !== action.payload
-        );
+        state.items = state.items.filter((i) => i.id !== action.payload);
       });
   },
 });
 
-export const { updateItem, deleteItem, setSearch, setSort } =
+export const { addList, updateItem, deleteItem, setSearch, setSort } =
   shoppingListSlice.actions;
 
 export default shoppingListSlice.reducer;

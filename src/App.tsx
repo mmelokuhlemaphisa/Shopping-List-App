@@ -1,14 +1,21 @@
-import { Route, Routes } from "react-router-dom";
-import "./App.css";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Home from "./pages/Home";
-import Profile from "./pages/Profile";
-import ProtectedRoute from "./pages/ProtectedRoute";
+// src/App.tsx
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+
+// Pages
 import LandingPage from "./pages/LandingPage";
 import ContactUs from "./pages/ContactUs";
 import Privacy from "./pages/Privacy";
-import ShoppingList from "./pages/ShoppingList";
+import ShoppingList from "./components/ShoppingList";
+
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+
+// Protected Route
+import ProtectedRoute from "./pages/ProtectedRoute";
+import ShoppingListPage from "./pages/ShoppingListPage";
 
 function App() {
   return (
@@ -27,7 +34,9 @@ function App() {
       />
       <Route path="/contact" element={<ContactUs />} />
       <Route path="/privacy" element={<Privacy />} />
-      <Route path="/shopping-list" element={<ShoppingList />} />
+
+      {/* Shopping Lists */}
+      <Route path="/shopping-list/:id" element={<ShoppingListPage />} />
     </Routes>
   );
 }
