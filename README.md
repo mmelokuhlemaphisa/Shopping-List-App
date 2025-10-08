@@ -6,7 +6,7 @@ A Shopping List is the web app that helps users create and manage multiple shopp
 
 ---
 
-### 🚀 Features
+### Features
 
 #### 🧾 Shopping Lists
 
@@ -58,7 +58,7 @@ A Shopping List is the web app that helps users create and manage multiple shopp
 | State Management   | Redux Toolkit                  |
 | Routing            | React Router                   |
 | Backend (Mock API) | JSON Server                    |
-| Styling            | Custom CSS / TailwindCSS ready |
+| Styling            | APP.CSS |
 | Utilities          | Axios, UUID                    |
 
 ---
@@ -100,16 +100,22 @@ Then open your browser at:
 
 ### 💻 API Endpoints (JSON Server)
 
-| Endpoint             | Method | Description              |
-| -------------------- | ------ | ------------------------ |
-| `/shoppingLists`     | GET    | Fetch all shopping lists |
-| `/shoppingLists`     | POST   | Add a new shopping list  |
-| `/shoppingLists/:id` | PUT    | Update an existing list  |
-| `/shoppingLists/:id` | DELETE | Delete a shopping list   |
-| `/shoppingItems`     | GET    | Fetch all shopping items |
-| `/shoppingItems`     | POST   | Add new item             |
-| `/shoppingItems/:id` | PUT    | Update item              |
-| `/shoppingItems/:id` | DELETE | Delete item              |
+| Endpoint             | Method | Description                 |
+| -------------------- | ------ | --------------------------- |
+| `/users`             | GET    | Fetch all registered users  |
+| `/users`             | POST   | Register a new user         |
+| `/users/:id`         | GET    | Fetch a specific user by ID |
+| `/users/:id`         | PUT    | Update user details         |
+| `/users/:id`         | DELETE | Delete a user account       |
+| `/shoppingLists`     | GET    | Fetch all shopping lists    |
+| `/shoppingLists`     | POST   | Add a new shopping list     |
+| `/shoppingLists/:id` | PUT    | Update an existing list     |
+| `/shoppingLists/:id` | DELETE | Delete a shopping list      |
+| `/shoppingItems`     | GET    | Fetch all shopping items    |
+| `/shoppingItems`     | POST   | Add new item                |
+| `/shoppingItems/:id` | PUT    | Update item                 |
+| `/shoppingItems/:id` | DELETE | Delete item                 |
+
 
 ---
 
