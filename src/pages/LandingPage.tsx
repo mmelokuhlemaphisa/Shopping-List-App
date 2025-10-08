@@ -8,13 +8,11 @@ const LandingPage: React.FC = () => {
   return (
     <div className="landing-page">
       <nav className="navbar">
-            <h1 className="navbar-title">ShopMate</h1>
-            <div className="navbar-links">
-              
-              
-             
-            </div>
-          </nav>
+        <h1 className="navbar-title">ShopMate</h1>
+        <div className="navbar-links">
+          <div className="navbar-links"></div>
+        </div>
+      </nav>
 
       {/* Hero Section */}
       <section className="hero-section">
@@ -24,12 +22,17 @@ const LandingPage: React.FC = () => {
             Keep track of your shopping items, categories, quantities, and notes
             all in one place.
           </p>
+          <div className="landing-buttons">
+            <Link to="/register">
+              <button className="cta-button">Get Started</button>
+            </Link>
 
-          <Link to="/login">
-          <button className="cta-button">Get Started</button>
-          </Link>
-
+            <Link to="/login">
+              <button className="cta-button">Login</button>
+            </Link>
+            </div>
         </div>
+        
         <div className="hero-image">
           <img src={shopping} alt="Shopping illustration" />
         </div>
@@ -53,7 +56,6 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-   
       <section className="about-section">
         <h2>About Us</h2>
         <p>

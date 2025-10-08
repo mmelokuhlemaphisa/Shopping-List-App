@@ -7,11 +7,11 @@ import {
   updateShoppingList,
   deleteShoppingList,
   fetchShoppingLists,
-  fetchShoppingItems,
   setSearch,
   setSort,
   type ShoppingListInfo,
-} from "../features/ShoppingList";
+} from "../features/ShoppingListSlice";
+import { fetchShoppingItems } from "../features/ShoppingItemsSlice";
 import { v4 as uuidv4 } from "uuid";
 import { Link } from "react-router-dom";
 import "../App.css";
@@ -19,9 +19,10 @@ import "../App.css";
 const ShoppingListsDashboard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const userId = useSelector((state: RootState) => state.login.id);
-  const { lists, search, sort, loading, items } = useSelector(
+  const { lists, search, sort, loading } = useSelector(
     (state: RootState) => state.shoppingList
   );
+  const items = useSelector((state: RootState) => state.shoppingItems.items);
 
   const [form, setForm] = useState({ name: "", category: "", image: "" });
   const [modalOpen, setModalOpen] = useState(false);
@@ -190,10 +191,9 @@ const ShoppingListsDashboard: React.FC = () => {
           <div className="no-items">
             <div className="no-items-content">
               <span className="no-items-icon">🛒</span>
-               <p>No shopping lists yet. Click “Add List” to get started!</p>
+              <p>No shopping lists yet. Click “Add List” to get started!</p>
             </div>
           </div>
-        
         ) : (
           filtered.map((list) => (
             <div key={list.listId} className="list-card">

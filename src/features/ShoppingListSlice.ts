@@ -3,25 +3,12 @@ import {
   createAsyncThunk,
   type PayloadAction,
 } from "@reduxjs/toolkit";
-import type { RootState } from "../../store";
 import axios from "axios";
+import type { RootState } from "../../store";
 
 // ========================
 // Type Definitions
 // ========================
-export interface ShoppingItem {
-  id: string;
-  name: string;
-  quantity: number;
-  notes?: string;
-  category: string;
-  status: "Pending" | "Purchased" | "Out of Stock";
-  image?: string;
-  dateAdded: string;
-  userId: string;
-  listId: string;
-}
-
 export interface ShoppingListInfo {
   listId: string;
   name: string;
@@ -32,7 +19,6 @@ export interface ShoppingListInfo {
 }
 
 export interface ShoppingListState {
-  items: ShoppingItem[];
   lists: ShoppingListInfo[];
   loading: boolean;
   error: string | null;
@@ -40,8 +26,10 @@ export interface ShoppingListState {
   sort: "name" | "category" | "date" | null;
 }
 
+// ========================
+// Initial State
+// ========================
 const initialState: ShoppingListState = {
-  items: [],
   lists: [],
   loading: false,
   error: null,
@@ -53,9 +41,9 @@ const initialState: ShoppingListState = {
 // Async Thunks
 // ========================
 
-// Fetch lists
+// Fetch shopping lists
 export const fetchShoppingLists = createAsyncThunk<ShoppingListInfo[], string>(
-  "shoppingList/fetchLists",
+  "shoppingLists/fetchAll",
   async (userId) => {
     const res = await axios.get(
       `http://localhost:3000/shoppingLists?userId=${userId}`
@@ -64,54 +52,38 @@ export const fetchShoppingLists = createAsyncThunk<ShoppingListInfo[], string>(
   }
 );
 
-// Fetch items
-export const fetchShoppingItems = createAsyncThunk<ShoppingItem[], string>(
-  "shoppingList/fetchItems",
-  async (userId) => {
-    const res = await axios.get(
-      `http://localhost:3000/shoppingItems?userId=${userId}`
-    );
-    return res.data;
-  }
-);
-
-// Add list
+// Add new shopping list
 export const addShoppingList = createAsyncThunk<
   ShoppingListInfo,
   ShoppingListInfo
->("shoppingList/addList", async (list) => {
+>("shoppingLists/add", async (list) => {
   const res = await axios.post(`http://localhost:3000/shoppingLists`, list);
   return res.data;
 });
 
-// ✅ Update list (fixed backend update)
+// Update shopping list
 export const updateShoppingList = createAsyncThunk<
   ShoppingListInfo,
   ShoppingListInfo
->("shoppingList/updateList", async (list) => {
-  // json-server routes by the resource's internal `id` field, but the app
-  // stores a `listId` UUID. First locate the internal record, then PUT to
-  // that internal id so the server updates the correct resource.
+>("shoppingLists/update", async (list) => {
   const findRes = await axios.get(
     `http://localhost:3000/shoppingLists?listId=${list.listId}`
   );
   const existing = findRes.data && findRes.data[0];
-  if (!existing) throw new Error("Shopping list not found on server");
+  if (!existing) throw new Error("Shopping list not found");
   const dbId = existing.id;
-  const payload = { ...list, id: dbId };
-  const res = await axios.put(
-    `http://localhost:3000/shoppingLists/${dbId}`,
-    payload
-  );
+  const res = await axios.put(`http://localhost:3000/shoppingLists/${dbId}`, {
+    ...list,
+    id: dbId,
+  });
   return res.data;
 });
 
-// ✅ Delete list + all items inside
+// Delete shopping list and related items
 export const deleteShoppingList = createAsyncThunk<string, string>(
-  "shoppingList/deleteList",
+  "shoppingLists/delete",
   async (listId) => {
-    // json-server uses the resource's internal `id` for REST routes. Find
-    // the record by `listId` then delete by the internal id.
+    // Find by listId to get db id
     const findRes = await axios.get(
       `http://localhost:3000/shoppingLists?listId=${listId}`
     );
@@ -121,14 +93,12 @@ export const deleteShoppingList = createAsyncThunk<string, string>(
       await axios.delete(`http://localhost:3000/shoppingLists/${dbId}`);
     }
 
-    // Delete related items (these use item.id which in our db.json is the
-    // item's real id, so we can delete directly)
+    // Also delete related items
     const { data: relatedItems } = await axios.get(
       `http://localhost:3000/shoppingItems?listId=${listId}`
     );
-
     await Promise.all(
-      relatedItems.map((item: ShoppingItem) =>
+      relatedItems.map((item: any) =>
         axios.delete(`http://localhost:3000/shoppingItems/${item.id}`)
       )
     );
@@ -137,41 +107,11 @@ export const deleteShoppingList = createAsyncThunk<string, string>(
   }
 );
 
-// Add item
-export const addShoppingItem = createAsyncThunk<ShoppingItem, ShoppingItem>(
-  "shoppingList/addItem",
-  async (item) => {
-    const res = await axios.post(`http://localhost:3000/shoppingItems`, item);
-    return res.data;
-  }
-);
-
-// Update item
-export const updateShoppingItem = createAsyncThunk<ShoppingItem, ShoppingItem>(
-  "shoppingList/updateItem",
-  async (item) => {
-    const res = await axios.put(
-      `http://localhost:3000/shoppingItems/${item.id}`,
-      item
-    );
-    return res.data;
-  }
-);
-
-// Delete item
-export const deleteShoppingItem = createAsyncThunk<string, string>(
-  "shoppingList/deleteItem",
-  async (id) => {
-    await axios.delete(`http://localhost:3000/shoppingItems/${id}`);
-    return id;
-  }
-);
-
 // ========================
 // Slice
 // ========================
 const shoppingListSlice = createSlice({
-  name: "shoppingList",
+  name: "shoppingLists",
   initialState,
   reducers: {
     setSearch: (state, action: PayloadAction<string>) => {
@@ -186,13 +126,16 @@ const shoppingListSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchShoppingLists.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(fetchShoppingLists.fulfilled, (state, action) => {
         state.lists = action.payload;
         state.loading = false;
       })
-      .addCase(fetchShoppingItems.fulfilled, (state, action) => {
-        state.items = action.payload;
+      .addCase(fetchShoppingLists.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.error.message || "Failed to load lists";
       })
       .addCase(addShoppingList.fulfilled, (state, action) => {
         state.lists.push(action.payload);
@@ -205,17 +148,6 @@ const shoppingListSlice = createSlice({
       })
       .addCase(deleteShoppingList.fulfilled, (state, action) => {
         state.lists = state.lists.filter((l) => l.listId !== action.payload);
-        state.items = state.items.filter((i) => i.listId !== action.payload);
-      })
-      .addCase(addShoppingItem.fulfilled, (state, action) => {
-        state.items.push(action.payload);
-      })
-      .addCase(updateShoppingItem.fulfilled, (state, action) => {
-        const index = state.items.findIndex((i) => i.id === action.payload.id);
-        if (index !== -1) state.items[index] = action.payload;
-      })
-      .addCase(deleteShoppingItem.fulfilled, (state, action) => {
-        state.items = state.items.filter((i) => i.id !== action.payload);
       });
   },
 });

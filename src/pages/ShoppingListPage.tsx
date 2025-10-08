@@ -1,17 +1,15 @@
-
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../store";
+import { fetchShoppingLists, setSearch, setSort } from "../features/ShoppingListSlice";
 import {
-  fetchShoppingLists,
   addShoppingItem,
   updateShoppingItem,
   deleteShoppingItem,
+  fetchShoppingItems,
   type ShoppingItem,
-  setSearch,
-  setSort,
-} from "../features/ShoppingList";
+} from "../features/ShoppingItemsSlice";
 import { v4 as uuidv4 } from "uuid";
 import "../App.css";
 import NavBar from "../components/Navbar";
@@ -20,9 +18,10 @@ const ShoppingListDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const userId = useSelector((state: RootState) => state.login.id);
-  const { items, lists, search, sort } = useSelector(
+  const { lists, search, sort } = useSelector(
     (state: RootState) => state.shoppingList
   );
+  const items = useSelector((state: RootState) => state.shoppingItems.items);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -37,7 +36,10 @@ const ShoppingListDetails: React.FC = () => {
   });
 
   useEffect(() => {
-    if (userId) dispatch(fetchShoppingLists(userId));
+    if (userId) {
+      dispatch(fetchShoppingLists(userId));
+      dispatch(fetchShoppingItems(userId));
+    }
   }, [dispatch, userId]);
 
   const listInfo = lists.find((l) => l.listId === id) || {
@@ -111,7 +113,9 @@ const ShoppingListDetails: React.FC = () => {
 
   // Share an item: try Web Share API, fallback to clipboard copy
   const handleShare = async (item: ShoppingItem) => {
-    const shareText = `Item: ${item.name}\nQuantity: ${item.quantity}\nCategory: ${item.category || "-"}\nNotes: ${item.notes || "-"}`;
+    const shareText = `Item: ${item.name}\nQuantity: ${
+      item.quantity
+    }\nCategory: ${item.category || "-"}\nNotes: ${item.notes || "-"}`;
     try {
       if (navigator.share) {
         await navigator.share({
@@ -120,7 +124,9 @@ const ShoppingListDetails: React.FC = () => {
         });
       } else if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(shareText);
-        window.alert("Item details copied to clipboard. You can paste them into messages.");
+        window.alert(
+          "Item details copied to clipboard. You can paste them into messages."
+        );
       } else {
         // final fallback: prompt with the text selected so user can copy
         // eslint-disable-next-line no-alert
@@ -137,7 +143,8 @@ const ShoppingListDetails: React.FC = () => {
   const handleShareAll = async () => {
     const header = `List: ${listInfo.name}\nTotal items: ${listItems.length}\n\n`;
     const bodyLines = listItems.map(
-      (it) => `- ${it.name} (qty: ${it.quantity}) ${it.notes ? `- ${it.notes}` : ""}`
+      (it) =>
+        `- ${it.name} (qty: ${it.quantity}) ${it.notes ? `- ${it.notes}` : ""}`
     );
     const shareText = header + bodyLines.join("\n");
     try {
@@ -321,9 +328,7 @@ const ShoppingListDetails: React.FC = () => {
                   <td>{new Date(item.dateAdded).toLocaleDateString()}</td>
                   <td>
                     <button onClick={() => handleEdit(item)}>Edit</button>
-                    <button onClick={() => handleShare(item)}>
-                      Share
-                    </button>
+                    <button onClick={() => handleShare(item)}>Share</button>
                     <button
                       onClick={() => dispatch(deleteShoppingItem(item.id))}
                       className="delete-btn"
