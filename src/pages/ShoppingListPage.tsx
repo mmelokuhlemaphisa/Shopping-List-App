@@ -2,8 +2,18 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../store";
-import {fetchShoppingLists, setSearch, setSort,} from "../features/ShoppingListSlice";
-import {addShoppingItem, updateShoppingItem, deleteShoppingItem, fetchShoppingItems, type ShoppingItem,} from "../features/ShoppingItemsSlice";
+import {
+  fetchShoppingLists,
+  setSearch,
+  setSort,
+} from "../features/ShoppingListSlice";
+import {
+  addShoppingItem,
+  updateShoppingItem,
+  deleteShoppingItem,
+  fetchShoppingItems,
+  type ShoppingItem,
+} from "../features/ShoppingItemsSlice";
 import { v4 as uuidv4 } from "uuid";
 import "../App.css";
 import NavBar from "../components/Navbar";
@@ -28,6 +38,7 @@ const ShoppingListDetails: React.FC = () => {
     image: "",
     status: "Pending" as "Pending" | "Purchased" | "Out of Stock",
   });
+  const [customCategory, setCustomCategory] = useState("");
 
   useEffect(() => {
     if (userId) {
@@ -45,7 +56,7 @@ const ShoppingListDetails: React.FC = () => {
   const listItems = items
     .filter((item) => item.listId === id && item.userId === userId)
     .filter((item) => item.name.toLowerCase().includes(search.toLowerCase()))
-    
+
     .sort((a, b) => {
       if (sort === "name") return a.name.localeCompare(b.name);
       if (sort === "category") return a.category.localeCompare(b.category);
@@ -65,7 +76,8 @@ const ShoppingListDetails: React.FC = () => {
       name: form.name,
       quantity: form.quantity,
       notes: form.notes || "",
-      category: form.category || "",
+      category:
+        form.category === "Other" ? customCategory || "" : form.category || "",
       image: form.image || "",
       status: form.status || "Pending",
       dateAdded: new Date().toISOString(),
@@ -98,10 +110,39 @@ const ShoppingListDetails: React.FC = () => {
       name: item.name,
       quantity: item.quantity,
       notes: item.notes || "",
-      category: item.category || "",
+      // if the item's category is not one of the known options, set the
+      // select to 'Other' and populate customCategory so the user can see it
+      category: [
+        "Decoration",
+        "Food",
+        "Drinks",
+        "Music",
+        "Furniture",
+        "Lighting",
+        "Other",
+      ].includes(item.category)
+        ? item.category
+        : "Other",
       image: item.image || "",
       status: item.status || "Pending",
     });
+    // if it's a non-standard category, show it in custom input
+    if (
+      item.category &&
+      ![
+        "Decoration",
+        "Food",
+        "Drinks",
+        "Music",
+        "Furniture",
+        "Lighting",
+        "Other",
+      ].includes(item.category)
+    ) {
+      setCustomCategory(item.category);
+    } else {
+      setCustomCategory("");
+    }
     setModalOpen(true);
     setIsEditing(true);
   };
@@ -198,7 +239,24 @@ const ShoppingListDetails: React.FC = () => {
             <option value="category">Category</option>
             <option value="date">Date Added</option>
           </select>
-          <button onClick={() => setModalOpen(true)} className="add-list-btn">
+          <button
+            onClick={() => {
+              // prepare a fresh form for adding
+              setForm({
+                id: "",
+                name: "",
+                quantity: 0,
+                notes: "",
+                category: "",
+                image: "",
+                status: "Pending",
+              });
+              setCustomCategory("");
+              setIsEditing(false);
+              setModalOpen(true);
+            }}
+            className="add-list-btn"
+          >
             Add Item
           </button>
           <button
@@ -251,6 +309,15 @@ const ShoppingListDetails: React.FC = () => {
                 <option value="Lighting">Lighting</option>
                 <option value="Other">Other</option>
               </select>
+              {/* If user selects Other, show an input to type a custom category */}
+              {form.category === "Other" && (
+                <input
+                  type="text"
+                  placeholder="Enter custom category"
+                  value={customCategory}
+                  onChange={(e) => setCustomCategory(e.target.value)}
+                />
+              )}
               <select
                 value={form.status}
                 onChange={(e) =>
@@ -281,6 +348,16 @@ const ShoppingListDetails: React.FC = () => {
                   onClick={() => {
                     setModalOpen(false);
                     setIsEditing(false);
+                    setCustomCategory("");
+                    setForm({
+                      id: "",
+                      name: "",
+                      quantity: 0,
+                      notes: "",
+                      category: "",
+                      image: "",
+                      status: "Pending",
+                    });
                   }}
                 >
                   Cancel
