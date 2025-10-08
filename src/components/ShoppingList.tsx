@@ -4,8 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../store";
 import {
   addShoppingList,
+  updateShoppingList,
   deleteShoppingList,
   fetchShoppingLists,
+  fetchShoppingItems,
   setSearch,
   setSort,
   type ShoppingListInfo,
@@ -17,7 +19,7 @@ import "../App.css";
 const ShoppingListsDashboard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const userId = useSelector((state: RootState) => state.login.id);
-  const { lists, search, sort, loading } = useSelector(
+  const { lists, search, sort, loading, items } = useSelector(
     (state: RootState) => state.shoppingList
   );
 
@@ -26,9 +28,12 @@ const ShoppingListsDashboard: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState("");
 
-  // Fetch shopping lists on mount
+  // Fetch shopping lists and items on mount so data persists across refresh
   useEffect(() => {
-    if (userId) dispatch(fetchShoppingLists(userId));
+    if (userId) {
+      dispatch(fetchShoppingLists(userId));
+      dispatch(fetchShoppingItems(userId));
+    }
   }, [dispatch, userId]);
 
   // Filter & sort lists
@@ -44,16 +49,20 @@ const ShoppingListsDashboard: React.FC = () => {
       return 0;
     });
 
-  // Add or update list
+  // Add or update list (fully connected to backend)
   const handleAddOrUpdate = async () => {
     if (!form.name.trim() || !userId) return;
 
     if (isEditing) {
-      // Simple local update (backend update optional)
-      const index = lists.findIndex((l) => l.listId === editId);
-      if (index !== -1) {
-        lists[index] = { ...lists[index], ...form };
-      }
+      const updatedList: ShoppingListInfo = {
+        listId: editId,
+        name: form.name,
+        category: form.category,
+        userId,
+        dateAdded: new Date().toISOString(),
+        image: form.image || "",
+      };
+      await dispatch(updateShoppingList(updatedList)); // ✅ backend update
     } else {
       const newList: ShoppingListInfo = {
         listId: uuidv4(),
@@ -63,9 +72,10 @@ const ShoppingListsDashboard: React.FC = () => {
         dateAdded: new Date().toISOString(),
         image: form.image || "",
       };
-      await dispatch(addShoppingList(newList));
+      await dispatch(addShoppingList(newList)); // ✅ backend add
     }
 
+    // Reset form
     setModalOpen(false);
     setIsEditing(false);
     setEditId("");
@@ -84,17 +94,21 @@ const ShoppingListsDashboard: React.FC = () => {
     setEditId(list.listId);
   };
 
-  // Delete a list
-  const handleDelete = (listId: string) => {
-    if (window.confirm("Are you sure you want to delete this list?")) {
-      dispatch(deleteShoppingList(listId));
+  // Delete a list (with confirmation)
+  const handleDelete = async (listId: string) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this list and all its items?"
+    );
+    if (confirmDelete) {
+      await dispatch(deleteShoppingList(listId)); // ✅ backend delete
     }
   };
 
   return (
     <div className="dashboard-container">
+      {/* Header */}
       <div className="dashboard-header">
-        <h2>My Shopping Lists</h2>
+        <h2>🛒 My Shopping Lists</h2>
         <div className="dashboard-controls">
           <input
             type="text"
@@ -120,7 +134,7 @@ const ShoppingListsDashboard: React.FC = () => {
           </select>
 
           <button onClick={() => setModalOpen(true)} className="add-list-btn">
-            Add List
+            ➕ Add List
           </button>
         </div>
       </div>
@@ -129,7 +143,7 @@ const ShoppingListsDashboard: React.FC = () => {
       {modalOpen && (
         <div className="modal-backdrop">
           <div className="modal-content">
-            <h3>{isEditing ? "Edit List" : "Add New List"}</h3>
+            <h3>{isEditing ? "✏️ Edit List" : "🆕 Add New List"}</h3>
             <input
               type="text"
               placeholder="List Name"
@@ -148,14 +162,17 @@ const ShoppingListsDashboard: React.FC = () => {
               value={form.image}
               onChange={(e) => setForm({ ...form, image: e.target.value })}
             />
+
             <div className="modal-buttons">
-              <button onClick={handleAddOrUpdate}>
+              <button className="confirm-btn" onClick={handleAddOrUpdate}>
                 {isEditing ? "Update" : "Add"}
               </button>
               <button
+                className="cancel-btn"
                 onClick={() => {
                   setModalOpen(false);
                   setIsEditing(false);
+                  setForm({ name: "", category: "", image: "" });
                 }}
               >
                 Cancel
@@ -170,7 +187,13 @@ const ShoppingListsDashboard: React.FC = () => {
         {loading ? (
           <p>Loading lists...</p>
         ) : filtered.length === 0 ? (
-          <p>No shopping lists yet.</p>
+          <div className="no-items">
+            <div className="no-items-content">
+              <span className="no-items-icon">🛒</span>
+               <p>No shopping lists yet. Click “Add List” to get started!</p>
+            </div>
+          </div>
+        
         ) : (
           filtered.map((list) => (
             <div key={list.listId} className="list-card">
@@ -181,9 +204,18 @@ const ShoppingListsDashboard: React.FC = () => {
               />
               <div className="list-info">
                 <h3>{list.name}</h3>
-                <p>Category: {list.category}</p>
+                <p>🗂️ Category: {list.category}</p>
+                {/* show how many items this list has (0 items if none) */}
+                <p>
+                  {
+                    items.filter(
+                      (it) => it.listId === list.listId && it.userId === userId
+                    ).length
+                  }{" "}
+                  items
+                </p>
                 <p className="date-added">
-                  Added: {new Date(list.dateAdded).toLocaleDateString()}
+                  📅 Added: {new Date(list.dateAdded).toLocaleDateString()}
                 </p>
                 <div className="list-buttons">
                   <Link to={`/shopping-list/${list.listId}`}>

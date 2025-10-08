@@ -109,6 +109,62 @@ const ShoppingListDetails: React.FC = () => {
     setIsEditing(true);
   };
 
+  // Share an item: try Web Share API, fallback to clipboard copy
+  const handleShare = async (item: ShoppingItem) => {
+    const shareText = `Item: ${item.name}\nQuantity: ${item.quantity}\nCategory: ${item.category || "-"}\nNotes: ${item.notes || "-"}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: `${item.name} - Shopping Item`,
+          text: shareText,
+        });
+      } else if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareText);
+        window.alert("Item details copied to clipboard. You can paste them into messages.");
+      } else {
+        // final fallback: prompt with the text selected so user can copy
+        // eslint-disable-next-line no-alert
+        window.prompt("Copy item details:", shareText);
+      }
+    } catch (err) {
+      // silent fallback to clipboard prompt on error
+      // eslint-disable-next-line no-alert
+      window.prompt("Copy item details:", shareText);
+    }
+  };
+
+  // Share the entire list (all items on the page)
+  const handleShareAll = async () => {
+    const header = `List: ${listInfo.name}\nTotal items: ${listItems.length}\n\n`;
+    const bodyLines = listItems.map(
+      (it) => `- ${it.name} (qty: ${it.quantity}) ${it.notes ? `- ${it.notes}` : ""}`
+    );
+    const shareText = header + bodyLines.join("\n");
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: `${listInfo.name} - Shopping List`,
+          text: shareText,
+        });
+        return;
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareText);
+        // eslint-disable-next-line no-alert
+        window.alert("List details copied to clipboard.");
+        return;
+      }
+
+      // fallback
+      // eslint-disable-next-line no-alert
+      window.prompt("Copy list details:", shareText);
+    } catch (err) {
+      // eslint-disable-next-line no-alert
+      window.prompt("Copy list details:", shareText);
+    }
+  };
+
   return (
     <div>
       <NavBar />
@@ -142,6 +198,13 @@ const ShoppingListDetails: React.FC = () => {
           </select>
           <button onClick={() => setModalOpen(true)} className="add-list-btn">
             Add Item
+          </button>
+          <button
+            onClick={() => handleShareAll()}
+            className="share-list-btn"
+            style={{ marginLeft: 8 }}
+          >
+            Share List
           </button>
           <Link to="/home">
             <button className="back-btn">Back to Lists</button>
@@ -258,6 +321,9 @@ const ShoppingListDetails: React.FC = () => {
                   <td>{new Date(item.dateAdded).toLocaleDateString()}</td>
                   <td>
                     <button onClick={() => handleEdit(item)}>Edit</button>
+                    <button onClick={() => handleShare(item)}>
+                      Share
+                    </button>
                     <button
                       onClick={() => dispatch(deleteShoppingItem(item.id))}
                       className="delete-btn"
