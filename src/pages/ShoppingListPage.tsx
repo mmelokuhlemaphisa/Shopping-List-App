@@ -2,14 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../store";
-import { fetchShoppingLists, setSearch, setSort } from "../features/ShoppingListSlice";
-import {
-  addShoppingItem,
-  updateShoppingItem,
-  deleteShoppingItem,
-  fetchShoppingItems,
-  type ShoppingItem,
-} from "../features/ShoppingItemsSlice";
+import {fetchShoppingLists, setSearch, setSort,} from "../features/ShoppingListSlice";
+import {addShoppingItem, updateShoppingItem, deleteShoppingItem, fetchShoppingItems, type ShoppingItem,} from "../features/ShoppingItemsSlice";
 import { v4 as uuidv4 } from "uuid";
 import "../App.css";
 import NavBar from "../components/Navbar";
@@ -51,6 +45,7 @@ const ShoppingListDetails: React.FC = () => {
   const listItems = items
     .filter((item) => item.listId === id && item.userId === userId)
     .filter((item) => item.name.toLowerCase().includes(search.toLowerCase()))
+    
     .sort((a, b) => {
       if (sort === "name") return a.name.localeCompare(b.name);
       if (sort === "category") return a.category.localeCompare(b.category);

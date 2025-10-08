@@ -121,6 +121,18 @@
       "dateAdded": "2025-10-08T06:27:36.875Z",
       "userId": "28b4",
       "listId": "2142d2d5-69d7-4080-bdd5-d67a2d056af4"
+    },
+    {
+      "id": "e767f9fe-c0f2-4ecf-ae40-c472f437864d",
+      "name": "AA",
+      "quantity": 0,
+      "notes": "CCC",
+      "category": "Furniture",
+      "image": "FVVG",
+      "status": "Purchased",
+      "dateAdded": "2025-10-08T12:22:41.534Z",
+      "userId": "28b4",
+      "listId": "c678b9d3-7a6d-4603-855a-32459b2b1483"
     }
   ]
 }

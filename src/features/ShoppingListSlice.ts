@@ -6,9 +6,7 @@ import {
 import axios from "axios";
 import type { RootState } from "../../store";
 
-// ========================
-// Type Definitions
-// ========================
+
 export interface ShoppingListInfo {
   listId: string;
   name: string;
@@ -26,9 +24,7 @@ export interface ShoppingListState {
   sort: "name" | "category" | "date" | null;
 }
 
-// ========================
-// Initial State
-// ========================
+
 const initialState: ShoppingListState = {
   lists: [],
   loading: false,
@@ -37,9 +33,7 @@ const initialState: ShoppingListState = {
   sort: null,
 };
 
-// ========================
-// Async Thunks
-// ========================
+
 
 // Fetch shopping lists
 export const fetchShoppingLists = createAsyncThunk<ShoppingListInfo[], string>(
@@ -107,9 +101,7 @@ export const deleteShoppingList = createAsyncThunk<string, string>(
   }
 );
 
-// ========================
-// Slice
-// ========================
+
 const shoppingListSlice = createSlice({
   name: "shoppingLists",
   initialState,

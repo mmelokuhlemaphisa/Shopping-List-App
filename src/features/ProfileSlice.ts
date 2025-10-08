@@ -1,8 +1,4 @@
-import {
-  createSlice,
-  createAsyncThunk,
-  type PayloadAction,
-} from "@reduxjs/toolkit";
+import {createSlice, createAsyncThunk, type PayloadAction,} from "@reduxjs/toolkit";
 import axios from "axios";
 
 // Profile interface

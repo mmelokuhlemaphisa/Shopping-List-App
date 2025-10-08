@@ -2,9 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import type { RootState } from "../../store";
 
-// ========================
-// Type Definitions
-// ========================
+
 export interface ShoppingItem {
   id: string;
   name: string;
@@ -30,9 +28,7 @@ const initialState: ShoppingItemState = {
   error: null,
 };
 
-// ========================
-// Async Thunks
-// ========================
+
 export const fetchShoppingItems = createAsyncThunk<ShoppingItem[], string>(
   "shoppingItems/fetchAll",
   async (userId) => {
@@ -70,9 +66,7 @@ export const deleteShoppingItem = createAsyncThunk<string, string>(
   }
 );
 
-// ========================
-// Slice
-// ========================
+
 const shoppingItemsSlice = createSlice({
   name: "shoppingItems",
   initialState,
