@@ -2,12 +2,14 @@ import React, { useEffect, useState, type FormEvent } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState, AppDispatch } from "../../store";
 import { fetchProfile, updateProfile } from "../features/ProfileSlice";
+import { useToast } from "../components/Toast";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
 
 const Profile: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const userId = useSelector((state: RootState) => state.login.id);
 
@@ -50,7 +52,7 @@ const Profile: React.FC = () => {
           error: null,
         })
       ).unwrap();
-      alert("Profile updated!");
+      toast.push("Profile updated!", "success");
       setEditMode(false);
     } catch (err) {
       console.error(err);
@@ -62,9 +64,6 @@ const Profile: React.FC = () => {
       <div className="profile-card">
         {/* Header with gradient */}
         <div className="profile-header">
-          <span className="back-button" onClick={() => navigate("/")}>
-            ←
-          </span>
           <div className="avatar-wrapper">
             <div className="avatar">👤</div>
           </div>
@@ -102,6 +101,9 @@ const Profile: React.FC = () => {
 
               <button className="btn primary" onClick={() => setEditMode(true)}>
                 Edit Profile
+              </button>
+              <button className="back- btn" onClick={() => navigate("/")}>
+                Logout
               </button>
             </div>
           ) : (

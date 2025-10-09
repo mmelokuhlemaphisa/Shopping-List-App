@@ -1,7 +1,8 @@
 import React, { useState, type FormEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../store";
-import {loginUser} from "../features/LoginSlice";
+import { loginUser } from "../features/LoginSlice";
+import { useToast } from "../components/Toast";
 import { useNavigate } from "react-router-dom";
 import "../App.css"; // <-- import styles
 
@@ -12,12 +13,13 @@ const Login: React.FC = () => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const toast = useToast();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
       await dispatch(loginUser({ username, password })).unwrap();
-      alert("Login successful!");
+      toast.push("Login successful!", "success");
       navigate("/home"); // redirect to home page
     } catch (err) {
       console.error(err);

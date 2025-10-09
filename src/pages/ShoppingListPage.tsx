@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../store";
@@ -7,6 +7,8 @@ import {
   setSearch,
   setSort,
 } from "../features/ShoppingListSlice";
+import { useSearchParams } from "react-router-dom";
+
 import {
   addShoppingItem,
   updateShoppingItem,
@@ -17,6 +19,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import "../App.css";
 import NavBar from "../components/Navbar";
+import { useToast } from "../components/Toast";
 
 const ShoppingListDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -25,6 +28,8 @@ const ShoppingListDetails: React.FC = () => {
   const { lists, search, sort } = useSelector(
     (state: RootState) => state.shoppingList
   );
+  const [searchParams, setSearchParams] = useSearchParams();
+  const firstInputRef = useRef<HTMLInputElement | null>(null);
   const items = useSelector((state: RootState) => state.shoppingItems.items);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -39,6 +44,12 @@ const ShoppingListDetails: React.FC = () => {
     status: "Pending" as "Pending" | "Purchased" | "Out of Stock",
   });
   const [customCategory, setCustomCategory] = useState("");
+  const toast = useToast();
+  const [pendingDeleteItem, setPendingDeleteItem] = useState<string | null>(
+    null
+  );
+  const [pendingDeleteAnchor, setPendingDeleteAnchor] =
+    useState<HTMLElement | null>(null);
 
   useEffect(() => {
     if (userId) {
@@ -87,8 +98,10 @@ const ShoppingListDetails: React.FC = () => {
 
     if (isEditing) {
       dispatch(updateShoppingItem(itemToSave));
+      toast.push("Item updated", "success");
     } else {
       dispatch(addShoppingItem(itemToSave));
+      toast.push("Item added", "success");
     }
 
     setModalOpen(false);
@@ -103,6 +116,13 @@ const ShoppingListDetails: React.FC = () => {
       status: "Pending",
     });
   };
+
+  // focus the first input when the modal opens
+  useEffect(() => {
+    if (modalOpen) {
+      setTimeout(() => firstInputRef.current?.focus(), 50);
+    }
+  }, [modalOpen]);
 
   const handleEdit = (item: ShoppingItem) => {
     setForm({
@@ -160,18 +180,36 @@ const ShoppingListDetails: React.FC = () => {
         });
       } else if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(shareText);
-        window.alert(
-          "Item details copied to clipboard. You can paste them into messages."
-        );
+        toast.push("Item details copied to clipboard.", "success");
       } else {
-        // final fallback: prompt with the text selected so user can copy
-        // eslint-disable-next-line no-alert
-        window.prompt("Copy item details:", shareText);
+        // final fallback: create a temporary textarea, select & copy, notify
+        const ta = document.createElement("textarea");
+        ta.value = shareText;
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand("copy");
+          toast.push("Item details copied to clipboard.", "success");
+        } catch (err) {
+          toast.push(
+            "Unable to copy automatically. Please select and copy.",
+            "info"
+          );
+        }
+        document.body.removeChild(ta);
       }
     } catch (err) {
-      // silent fallback to clipboard prompt on error
-      // eslint-disable-next-line no-alert
-      window.prompt("Copy item details:", shareText);
+      // fallback: try clipboard then notify
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          await navigator.clipboard.writeText(shareText);
+          toast.push("Item details copied to clipboard.", "success");
+          return;
+        } catch (copyErr) {
+          // ignore
+        }
+      }
+      toast.push("Unable to share item details automatically.", "info");
     }
   };
 
@@ -194,17 +232,27 @@ const ShoppingListDetails: React.FC = () => {
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(shareText);
-        // eslint-disable-next-line no-alert
-        window.alert("List details copied to clipboard.");
+        toast.push("List details copied to clipboard.", "success");
         return;
       }
 
-      // fallback
-      // eslint-disable-next-line no-alert
-      window.prompt("Copy list details:", shareText);
+      // fallback: create a temporary textarea and copy
+      const ta = document.createElement("textarea");
+      ta.value = shareText;
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand("copy");
+        toast.push("List details copied to clipboard.", "success");
+      } catch (err) {
+        toast.push(
+          "Unable to copy automatically. Please select and copy.",
+          "info"
+        );
+      }
+      document.body.removeChild(ta);
     } catch (err) {
-      // eslint-disable-next-line no-alert
-      window.prompt("Copy list details:", shareText);
+      toast.push("Unable to share list details automatically.", "info");
     }
   };
 
@@ -222,16 +270,30 @@ const ShoppingListDetails: React.FC = () => {
             type="text"
             placeholder="Search items..."
             value={search}
-            onChange={(e) => dispatch(setSearch(e.target.value))}
+            onChange={(e) => {
+              const v = e.target.value;
+              dispatch(setSearch(v));
+              // debounce URL update
+              window.clearTimeout((window as any)._searchDeb);
+              (window as any)._searchDeb = window.setTimeout(() => {
+                const params = new URLSearchParams(searchParams.toString());
+                if (v) params.set("q", v);
+                else params.delete("q");
+                setSearchParams(params);
+              }, 300);
+            }}
             className="search-input"
           />
           <select
             value={sort || ""}
-            onChange={(e) =>
-              dispatch(
-                setSort(e.target.value as "name" | "category" | "date" | null)
-              )
-            }
+            onChange={(e) => {
+              const val = e.target.value as "name" | "category" | "date" | "";
+              dispatch(setSort(val || null));
+              const params = new URLSearchParams(searchParams.toString());
+              if (val) params.set("sort", val);
+              else params.delete("sort");
+              setSearchParams(params);
+            }}
             className="sort-select"
           >
             <option value="">Sort By</option>
@@ -301,13 +363,19 @@ const ShoppingListDetails: React.FC = () => {
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
               >
                 <option value="">Select Category</option>
-                <option value="Decoration">Decoration</option>
-                <option value="Food">Food</option>
-                <option value="Drinks">Drinks</option>
-                <option value="Music">Music</option>
-                <option value="Furniture">Furniture</option>
-                <option value="Lighting">Lighting</option>
-                <option value="Other">Other</option>
+                <option value="food">food</option>
+                <option value="dairy">dairy</option>
+                <option value="drinks">drinks</option>
+                <option value="fruits">fruits</option>
+                <option value="veggies">veggies</option>
+                <option value="appliences">appliences</option>
+                <option value="deodorant">deodorant</option>
+                <option value="lotion">lotion</option>
+                <option value="hair">hair</option>
+                <option value="shoes">shoes</option>
+                <option value="dresses">dresses</option>
+               <option value="jerseys">jerseys</option>
+                <option value="bags">bags</option>
               </select>
               {/* If user selects Other, show an input to type a custom category */}
               {form.category === "Other" && (
@@ -401,12 +469,45 @@ const ShoppingListDetails: React.FC = () => {
                   <td>
                     <button onClick={() => handleEdit(item)}>Edit</button>
                     <button onClick={() => handleShare(item)}>Share</button>
-                    <button
-                      onClick={() => dispatch(deleteShoppingItem(item.id))}
-                      className="delete-btn"
-                    >
-                      Delete
-                    </button>
+                    {pendingDeleteItem === item.id ? (
+                      <>
+                        <button
+                          style={{ backgroundColor: "#dc2626", color: "white" }}
+                          onClick={async () => {
+                            await dispatch(deleteShoppingItem(item.id));
+                            setPendingDeleteItem(null);
+                            toast.push(
+                              "Item deleted",
+                              "success",
+                              pendingDeleteAnchor || null
+                            );
+                            setPendingDeleteAnchor(null);
+                          }}
+                        >
+                          Confirm
+                        </button>
+                        <button
+                          onClick={() => {
+                            setPendingDeleteItem(null);
+                            setPendingDeleteAnchor(null);
+                          }}
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={(e) => {
+                          setPendingDeleteItem(item.id);
+                          setPendingDeleteAnchor(
+                            e.currentTarget as HTMLElement
+                          );
+                        }}
+                        className="delete-btn"
+                      >
+                        Delete
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

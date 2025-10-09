@@ -3,12 +3,14 @@ import type { FormEvent, ChangeEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../store";
 import { registerUser, setField } from "../features/RegisterSlice";
+import { useToast } from "../components/Toast";
 import { useNavigate } from "react-router-dom";
 import "../App.css"; // import styles
 
 const Register: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const {
     username,
@@ -31,7 +33,7 @@ const Register: React.FC = () => {
       await dispatch(
         registerUser({ username, password, email, name, surname, cellNumber })
       ).unwrap();
-      alert("Registration successful!");
+      toast.push("Registration successful!", "success");
       navigate("/login");
     } catch (err) {
       console.error(err);

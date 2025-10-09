@@ -4,8 +4,7 @@ import {
   type PayloadAction,
 } from "@reduxjs/toolkit";
 import axios from "axios";
-import type { RootState } from "../../store";
-
+// RootState not needed in this file
 
 export interface ShoppingListInfo {
   listId: string;
@@ -24,7 +23,6 @@ export interface ShoppingListState {
   sort: "name" | "category" | "date" | null;
 }
 
-
 const initialState: ShoppingListState = {
   lists: [],
   loading: false,
@@ -32,8 +30,6 @@ const initialState: ShoppingListState = {
   search: "",
   sort: null,
 };
-
-
 
 // Fetch shopping lists
 export const fetchShoppingLists = createAsyncThunk<ShoppingListInfo[], string>(
@@ -100,7 +96,6 @@ export const deleteShoppingList = createAsyncThunk<string, string>(
     return listId;
   }
 );
-
 
 const shoppingListSlice = createSlice({
   name: "shoppingLists",

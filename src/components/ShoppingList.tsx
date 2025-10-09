@@ -1,5 +1,6 @@
 // src/components/ShoppingListsDashboard.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../store";
 import {
@@ -15,6 +16,7 @@ import { fetchShoppingItems } from "../features/ShoppingItemsSlice";
 import { v4 as uuidv4 } from "uuid";
 import { Link } from "react-router-dom";
 import "../App.css";
+import { useToast } from "./Toast";
 
 const ShoppingListsDashboard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -28,6 +30,8 @@ const ShoppingListsDashboard: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState("");
+  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+  const toast = useToast();
 
   // Fetch shopping lists and items on mount so data persists across refresh
   useEffect(() => {
@@ -36,6 +40,19 @@ const ShoppingListsDashboard: React.FC = () => {
       dispatch(fetchShoppingItems(userId));
     }
   }, [dispatch, userId]);
+
+  // URL sync: read initial q and sort from url
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    const q = searchParams.get("q") || "";
+    const s = searchParams.get("sort") || "";
+    if (q !== search) dispatch(setSearch(q));
+    if (s !== (sort || "")) dispatch(setSort((s as any) || null));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // debounce search param updates
+  const searchDebounceRef = useRef<number | undefined>(undefined);
 
   // Filter & sort lists
   const filtered = lists
@@ -64,6 +81,7 @@ const ShoppingListsDashboard: React.FC = () => {
         image: form.image || "",
       };
       await dispatch(updateShoppingList(updatedList)); // ✅ backend update
+      toast.push("List updated", "success");
     } else {
       const newList: ShoppingListInfo = {
         listId: uuidv4(),
@@ -74,6 +92,7 @@ const ShoppingListsDashboard: React.FC = () => {
         image: form.image || "",
       };
       await dispatch(addShoppingList(newList)); // ✅ backend add
+      toast.push("List added", "success");
     }
 
     // Reset form
@@ -96,13 +115,11 @@ const ShoppingListsDashboard: React.FC = () => {
   };
 
   // Delete a list (with confirmation)
-  const handleDelete = async (listId: string) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this list and all its items?"
-    );
-    if (confirmDelete) {
-      await dispatch(deleteShoppingList(listId)); // ✅ backend delete
-    }
+  const handleDelete = async (listId: string, anchor?: HTMLElement | null) => {
+    // call after user confirmed via inline UI
+    await dispatch(deleteShoppingList(listId)); // ✅ backend delete
+    setPendingDelete(null);
+    toast.push("List deleted", "success", anchor || null);
   };
 
   return (
@@ -115,17 +132,32 @@ const ShoppingListsDashboard: React.FC = () => {
             type="text"
             placeholder="Search lists..."
             value={search}
-            onChange={(e) => dispatch(setSearch(e.target.value))}
+            onChange={(e) => {
+              const v = e.target.value;
+              dispatch(setSearch(v));
+              window.clearTimeout(searchDebounceRef.current);
+              // update URL after short debounce
+              // @ts-ignore
+              searchDebounceRef.current = window.setTimeout(() => {
+                const params = new URLSearchParams(searchParams.toString());
+                if (v) params.set("q", v);
+                else params.delete("q");
+                setSearchParams(params);
+              }, 300);
+            }}
             className="search-input"
           />
 
           <select
             value={sort || ""}
-            onChange={(e) =>
-              dispatch(
-                setSort(e.target.value as "name" | "category" | "date" | null)
-              )
-            }
+            onChange={(e) => {
+              const val = e.target.value as "name" | "category" | "date" | "";
+              dispatch(setSort(val || null));
+              const params = new URLSearchParams(searchParams.toString());
+              if (val) params.set("sort", val);
+              else params.delete("sort");
+              setSearchParams(params);
+            }}
             className="sort-select"
           >
             <option value="">Sort By</option>
@@ -222,12 +254,31 @@ const ShoppingListsDashboard: React.FC = () => {
                     <button>View</button>
                   </Link>
                   <button onClick={() => handleEdit(list)}>Edit</button>
-                  <button
-                    style={{ backgroundColor: "#dc2626", color: "white" }}
-                    onClick={() => handleDelete(list.listId)}
-                  >
-                    Delete
-                  </button>
+                  {pendingDelete === list.listId ? (
+                    <>
+                      <button
+                        style={{ backgroundColor: "#dc2626", color: "white" }}
+                        onClick={(e) =>
+                          handleDelete(list.listId, e.currentTarget)
+                        }
+                      >
+                        Confirm
+                      </button>
+                      <button
+                        onClick={() => setPendingDelete(null)}
+                        className="cancel-btn"
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      style={{ backgroundColor: "#dc2626", color: "white" }}
+                      onClick={() => setPendingDelete(list.listId)}
+                    >
+                      Delete
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

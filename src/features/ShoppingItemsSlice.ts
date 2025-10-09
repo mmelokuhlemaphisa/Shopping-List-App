@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import type { RootState } from "../../store";
-
+// RootState not needed in this file
 
 export interface ShoppingItem {
   id: string;
@@ -27,7 +26,6 @@ const initialState: ShoppingItemState = {
   loading: false,
   error: null,
 };
-
 
 export const fetchShoppingItems = createAsyncThunk<ShoppingItem[], string>(
   "shoppingItems/fetchAll",
@@ -65,7 +63,6 @@ export const deleteShoppingItem = createAsyncThunk<string, string>(
     return id;
   }
 );
-
 
 const shoppingItemsSlice = createSlice({
   name: "shoppingItems",
