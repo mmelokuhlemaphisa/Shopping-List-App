@@ -53,7 +53,10 @@ export const loginUser = createAsyncThunk(
       const response = await axios.get("http://localhost:3000/user");
       const users = response.data as LoginState[];
 
-      const user = users.find((u) => u.username === userData.username);
+      // Allow login by username OR email
+      const user = users.find(
+        (u) => u.username === userData.username || u.email === userData.username
+      );
       if (!user) return rejectWithValue("Invalid username or password");
 
       // Decrypt stored password

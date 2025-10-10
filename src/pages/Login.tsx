@@ -36,11 +36,12 @@ const Login: React.FC = () => {
         {error && <p className="error-text">{error}</p>}
 
         <label htmlFor="username" className="input-label">
-          Username
+          Username or email
         </label>
         <input
+          id="username"
           type="text"
-          placeholder="Enter your username"
+          placeholder="Username or email"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           className="input-field"

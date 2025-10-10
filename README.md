@@ -89,8 +89,18 @@ A Shopping List is the web app that helps users create and manage multiple shopp
 Then open your browser at:
 (http://localhost:5173)
 
-
 ---
+### Set Up Redux Toolkit
+
+* Install react redux using this(npm install @reduxjs/toolkit react-redux)
+* Create the Redux Store
+* Connect Redux to Your App
+    * Open your main.tsx file (or main.jsx) and wrap your <App /> component with the Redux Provider:
+* Create Your First Slice
+    * inside src/features/, create a new file:
+* Use Redux in Components
+
+----
 ### Steps for JSON Server
 
 1. npm install -g json-server
@@ -101,6 +111,51 @@ Then open your browser at:
 
 4. npx json-server --watch db.json --port 3000
 
+ ## Example db.json
+
+{
+  "User":[
+    {
+     "id": "28b4",
+      "username": "Melo",
+      "password": "U2FsdGVkX1+Xd7VstG/r+bAvc2uqBm8Lj6I6B6dCf2I=",
+      "email": "melokuhlemaphisa99@gmail.com",
+      "name": "Melokuhle",
+      "surname": "Maphisa",
+      "cellNumber": "0649581777",
+      "loading": false,
+      "error": null
+    }
+  ],
+
+  "shoppingLists": [
+    {
+     "listId": "3f2119dd-56fd-4e5e-ad9c-4bab8e7b8ba9",
+      "name": "Weekly Groceries",
+      "category": "Foods",
+      "userId": "28b4",
+      "dateAdded": "2025-10-09T07:57:02.038Z",
+      "image": "https://www.shutterstock.com/image-photo/shopping-cart-full-groceries-supermarket-260nw-2379778937.jpg",
+      "id": "4a13"
+    }
+  ],
+  "shoppingItems": [
+    {
+      "id": "262ca87b-fe86-4886-ab20-4ce0f62b5296",
+      "name": "Apples",
+      "quantity": 6,
+      "notes": "Preferably red apples",
+      "category": "Fruits",
+      "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/jjhbgy
+      "status": "Pending",
+      "dateAdded": "2025-10-09T07:51:53.680Z",
+      "userId": "28b4",
+      "listId": "3f2119dd-56fd-4e5e-ad9c-4bab8e7b8ba9"
+    }
+  ]
+}
+
+---
 
 ### 💻 API Endpoints (JSON Server)
 
@@ -125,7 +180,7 @@ Then open your browser at:
 
 ### Notes and security
 
-- The mock backend is JSON Server and is intended for local development only. Do not use it as a production backend.
+- The backend is JSON Server 
 - This project currently encrypts passwords client-side with CryptoJS (VITE_SECRET_KEY). That is for demonstration only and is NOT secure for production. In a real app:
 - Hash passwords server-side with a strong algorithm (bcrypt/argon2) and a unique salt.
 - Serve the app over HTTPS and use secure, HttpOnly cookies or short-lived JWTs for authentication.
