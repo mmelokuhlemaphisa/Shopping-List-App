@@ -697,6 +697,8 @@ body {
 .dashboard-controls {
   display: flex;
   gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .dashboard-controls input,
@@ -708,18 +710,33 @@ body {
 }
 
 .dashboard-controls button {
-  padding: 8px 16px;
+  padding: 8px 14px;
   background-color: #22c55e;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-
-  transition: background-color 0.2s ease-in-out;
+  font-weight: 600;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease-in-out, transform 0.08s ease;
 }
 
 .dashboard-controls button:hover {
   background-color: #16a34a;
+}
+
+/* Specific control button sizing */
+.add-list-btn,
+.share-list-btn,
+.back-btn {
+  min-width: 120px;
+}
+
+@media (max-width: 768px) {
+
 }
 
 /* Modal */
@@ -1031,11 +1048,7 @@ body {
   justify-content: center;
 }
 
-
-
 @media (max-width: 768px) {
-  
-
   .nav-link {
     padding: 8px 6px;
     width: 100%;
@@ -1058,10 +1071,29 @@ body {
   .dashboard-header h2 {
     font-size: 1.1rem;
   }
-  .dashboard-controls {
+  /* .dashboard-controls {
     display: flex;
+   
     flex-direction: column;
     gap: 8px;
+  } */
+
+    .dashboard-controls {
+  gap: 8px;
+ width: 100%;
+  }
+
+  .dashboard-controls input,
+  .dashboard-controls select,
+  .dashboard-controls button {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .add-list-btn,
+  .share-list-btn,
+  .back-btn {
+    min-width: auto;
   }
   .search-input {
     margin-right: 0;

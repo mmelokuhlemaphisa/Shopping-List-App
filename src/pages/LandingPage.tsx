@@ -8,7 +8,7 @@ const LandingPage: React.FC = () => {
   return (
     <div className="landing-page">
       <nav className="navbar">
-        <h1 className="navbar-title">ShopMate</h1>
+        <h1 className="navbar-title">🛒ShopMate</h1>
         <div className="navbar-links">
           <div className="navbar-links"></div>
         </div>
@@ -30,9 +30,9 @@ const LandingPage: React.FC = () => {
             <Link to="/login">
               <button className="cta-button">Login</button>
             </Link>
-            </div>
+          </div>
         </div>
-        
+
         <div className="hero-image">
           <img src={shopping} alt="Shopping illustration" />
         </div>

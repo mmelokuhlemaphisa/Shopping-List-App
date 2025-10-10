@@ -374,7 +374,7 @@ const ShoppingListDetails: React.FC = () => {
                 <option value="hair">hair</option>
                 <option value="shoes">shoes</option>
                 <option value="dresses">dresses</option>
-               <option value="jerseys">jerseys</option>
+                <option value="jerseys">jerseys</option>
                 <option value="bags">bags</option>
               </select>
               {/* If user selects Other, show an input to type a custom category */}
@@ -453,20 +453,22 @@ const ShoppingListDetails: React.FC = () => {
             <tbody>
               {listItems.map((item) => (
                 <tr key={item.id}>
-                  <td>
+                  <td data-label="Image">
                     <img
                       src={item.image || "https://via.placeholder.com/100"}
                       alt={item.name}
                       className="table-image"
                     />
                   </td>
-                  <td>{item.name}</td>
-                  <td>{item.quantity}</td>
-                  <td>{item.category || "-"}</td>
-                  <td>{item.status || "Pending"}</td>
-                  <td>{item.notes || "-"}</td>
-                  <td>{new Date(item.dateAdded).toLocaleDateString()}</td>
-                  <td>
+                  <td data-label="Name">{item.name}</td>
+                  <td data-label="Quantity">{item.quantity}</td>
+                  <td data-label="Category">{item.category || "-"}</td>
+                  <td data-label="Status">{item.status || "Pending"}</td>
+                  <td data-label="Notes">{item.notes || "-"}</td>
+                  <td data-label="Date Added">
+                    {new Date(item.dateAdded).toLocaleDateString()}
+                  </td>
+                  <td data-label="Actions">
                     <button onClick={() => handleEdit(item)}>Edit</button>
                     <button onClick={() => handleShare(item)}>Share</button>
                     {pendingDeleteItem === item.id ? (

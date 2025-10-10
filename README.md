@@ -91,22 +91,26 @@ Then open your browser at:
 
 
 ---
-### Run JSON Server
+### Steps for JSON Server
 
-* Start backend on port 3000:
+1. npm install -g json-server
 
-* npx json-server --watch db.json --port 3000
+2. cd src
+
+3. cd data
+
+4. npx json-server --watch db.json --port 3000
 
 
 ### 💻 API Endpoints (JSON Server)
 
 | Endpoint             | Method | Description                 |
 | -------------------- | ------ | --------------------------- |
-| `/users`             | GET    | Fetch all registered users  |
-| `/users`             | POST   | Register a new user         |
-| `/users/:id`         | GET    | Fetch a specific user by ID |
-| `/users/:id`         | PUT    | Update user details         |
-| `/users/:id`         | DELETE | Delete a user account       |
+| `/user`             | GET    | Fetch all registered users  |
+| `/user`             | POST   | Register a new user         |
+| `/user/:id`         | GET    | Fetch a specific user by ID |
+| `/user/:id`         | PUT    | Update user details         |
+| `/user/:id`         | DELETE | Delete a user account       |
 | `/shoppingLists`     | GET    | Fetch all shopping lists    |
 | `/shoppingLists`     | POST   | Add a new shopping list     |
 | `/shoppingLists/:id` | PUT    | Update an existing list     |
@@ -118,6 +122,15 @@ Then open your browser at:
 
 
 ---
+
+### Notes and security
+
+- The mock backend is JSON Server and is intended for local development only. Do not use it as a production backend.
+- This project currently encrypts passwords client-side with CryptoJS (VITE_SECRET_KEY). That is for demonstration only and is NOT secure for production. In a real app:
+- Hash passwords server-side with a strong algorithm (bcrypt/argon2) and a unique salt.
+- Serve the app over HTTPS and use secure, HttpOnly cookies or short-lived JWTs for authentication.
+- The `src/data/db.json` file contains example data and some large base64 images. These increase the JSON size and can slow the dev server — consider replacing embedded images with external URLs or smaller thumbnails for faster reloads.
+
 
 
 
