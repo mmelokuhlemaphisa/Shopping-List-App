@@ -229,11 +229,9 @@ const ShoppingListsDashboard: React.FC = () => {
         ) : (
           filtered.map((list) => (
             <div key={list.listId} className="list-card">
-              <img
-                src={list.image || "https://via.placeholder.com/150"}
-                alt={list.name}
-                className="item-image"
-              />
+              {list.image ? (
+                <img src={list.image} alt={list.name} className="item-image" />
+              ) : null}
               <div className="list-info">
                 <h3>{list.name}</h3>
                 <p>🗂️ Category: {list.category}</p>

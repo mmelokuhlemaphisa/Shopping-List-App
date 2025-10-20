@@ -454,11 +454,15 @@ const ShoppingListDetails: React.FC = () => {
               {listItems.map((item) => (
                 <tr key={item.id}>
                   <td data-label="Image">
-                    <img
-                      src={item.image || "https://via.placeholder.com/100"}
-                      alt={item.name}
-                      className="table-image"
-                    />
+                    {item.image ? (
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="table-image"
+                      />
+                    ) : (
+                      <span className="no-image">-</span>
+                    )}
                   </td>
                   <td data-label="Name">{item.name}</td>
                   <td data-label="Quantity">{item.quantity}</td>

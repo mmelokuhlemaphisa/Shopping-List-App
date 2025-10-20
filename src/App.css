@@ -1010,6 +1010,7 @@ body {
 
 /* Footer styling */
 .footer {
+  padding: 10%;
   background-color: #2563eb; /* blue background */
   color: white;
   text-align: center;
