@@ -57,6 +57,15 @@
       "userId": "8895",
       "dateAdded": "2025-10-13T07:30:18.085Z",
       "image": ""
+    },
+    {
+      "id": "9e2d",
+      "listId": "0b726206-b4da-4225-a6b1-f72e59381f89",
+      "name": "yiyi",
+      "category": "yuiyiyuiy",
+      "userId": "8895",
+      "dateAdded": "2026-01-13T06:37:09.589Z",
+      "image": "https://media.istockphoto.com/id/520700958/photo/beautiful-flowers-background.jpg?s=612x612&w=0&k=20&c=A7WF8MScj3YNBTA-qFQEKm-Xphzmi_mfaOqjq27--j4="
     }
   ],
   "shoppingItems": [
@@ -95,6 +104,30 @@
       "dateAdded": "2025-10-13T07:35:41.893Z",
       "userId": "8895",
       "listId": "f4639b6b-0b28-4950-9ac9-0b9606727184"
+    },
+    {
+      "id": "6388b33e-d53f-43d3-8088-bff63e01753a",
+      "name": "gguytu",
+      "quantity": 2,
+      "notes": "gfutut",
+      "category": "dairy",
+      "image": "https://media.istockphoto.com/id/1550071750/photo/green-tea-tree-leaves-camellia-sinensis-in-organic-farm-sunlight-fresh-young-tender-bud.jpg?s=612x612&w=0&k=20&c=RC_xD5DY5qPH_hpqeOY1g1pM6bJgGJSssWYjVIvvoLw=",
+      "status": "Purchased",
+      "dateAdded": "2026-01-13T06:39:22.366Z",
+      "userId": "28b4",
+      "listId": "3f2119dd-56fd-4e5e-ad9c-4bab8e7b8ba9"
+    },
+    {
+      "id": "47acddab-2351-43c6-a124-f0123fc36015",
+      "name": "tryrty",
+      "quantity": 2,
+      "notes": "tttttyty",
+      "category": "drinks",
+      "image": "https://www.shutterstock.com/image-photo/poznan-pol-oct-31-2024-260nw-2542841489.jpg",
+      "status": "Pending",
+      "dateAdded": "2026-01-13T06:40:44.845Z",
+      "userId": "28b4",
+      "listId": "3f2119dd-56fd-4e5e-ad9c-4bab8e7b8ba9"
     }
   ]
 }
