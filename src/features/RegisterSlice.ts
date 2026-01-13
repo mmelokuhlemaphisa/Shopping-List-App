@@ -48,10 +48,13 @@ export const registerUser = createAsyncThunk(
       ).toString();
 
       // Post to your API
-      const response = await axios.post("http://localhost:3000/user", {
-        ...userData,
-        password: encryptedPassword,
-      });
+      const response = await axios.post(
+        "https://shoping-list-api.onrender.com/user",
+        {
+          ...userData,
+          password: encryptedPassword,
+        }
+      );
 
       return response.data;
     } catch (err: any) {

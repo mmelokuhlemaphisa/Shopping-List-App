@@ -36,7 +36,7 @@ export const fetchShoppingLists = createAsyncThunk<ShoppingListInfo[], string>(
   "shoppingLists/fetchAll",
   async (userId) => {
     const res = await axios.get(
-      `http://localhost:3000/shoppingLists?userId=${userId}`
+      `https://shoping-list-api.onrender.com/shoppingLists?userId=${userId}`
     );
     return res.data;
   }
@@ -47,7 +47,7 @@ export const addShoppingList = createAsyncThunk<
   ShoppingListInfo,
   ShoppingListInfo
 >("shoppingLists/add", async (list) => {
-  const res = await axios.post(`http://localhost:3000/shoppingLists`, list);
+  const res = await axios.post(`https://shoping-list-api.onrender.com/shoppingLists`, list);
   return res.data;
 });
 
@@ -57,12 +57,12 @@ export const updateShoppingList = createAsyncThunk<
   ShoppingListInfo
 >("shoppingLists/update", async (list) => {
   const findRes = await axios.get(
-    `http://localhost:3000/shoppingLists?listId=${list.listId}`
+    `https://shoping-list-api.onrender.com/shoppingLists?listId=${list.listId}`
   );
   const existing = findRes.data && findRes.data[0];
   if (!existing) throw new Error("Shopping list not found");
   const dbId = existing.id;
-  const res = await axios.put(`http://localhost:3000/shoppingLists/${dbId}`, {
+  const res = await axios.put(`https://shoping-list-api.onrender.com/shoppingLists/${dbId}`, {
     ...list,
     id: dbId,
   });
@@ -75,21 +75,21 @@ export const deleteShoppingList = createAsyncThunk<string, string>(
   async (listId) => {
     // Find by listId to get db id
     const findRes = await axios.get(
-      `http://localhost:3000/shoppingLists?listId=${listId}`
+      `https://shoping-list-api.onrender.com/shoppingLists?listId=${listId}`
     );
     const existing = findRes.data && findRes.data[0];
     if (existing) {
       const dbId = existing.id;
-      await axios.delete(`http://localhost:3000/shoppingLists/${dbId}`);
+      await axios.delete(`https://shoping-list-api.onrender.com/shoppingLists/${dbId}`);
     }
 
     // Also delete related items
     const { data: relatedItems } = await axios.get(
-      `http://localhost:3000/shoppingItems?listId=${listId}`
+      `https://shoping-list-api.onrender.com/shoppingItems?listId=${listId}`
     );
     await Promise.all(
       relatedItems.map((item: any) =>
-        axios.delete(`http://localhost:3000/shoppingItems/${item.id}`)
+        axios.delete(`https://shoping-list-api.onrender.com/shoppingItems/${item.id}`)
       )
     );
 

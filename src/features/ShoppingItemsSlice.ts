@@ -31,7 +31,7 @@ export const fetchShoppingItems = createAsyncThunk<ShoppingItem[], string>(
   "shoppingItems/fetchAll",
   async (userId) => {
     const res = await axios.get(
-      `http://localhost:3000/shoppingItems?userId=${userId}`
+      `https://shoping-list-api.onrender.com/shoppingItems?userId=${userId}`
     );
     return res.data;
   }
@@ -40,7 +40,7 @@ export const fetchShoppingItems = createAsyncThunk<ShoppingItem[], string>(
 export const addShoppingItem = createAsyncThunk<ShoppingItem, ShoppingItem>(
   "shoppingItems/add",
   async (item) => {
-    const res = await axios.post("http://localhost:3000/shoppingItems", item);
+    const res = await axios.post("https://shoping-list-api.onrender.com/shoppingItems", item);
     return res.data;
   }
 );
@@ -49,7 +49,7 @@ export const updateShoppingItem = createAsyncThunk<ShoppingItem, ShoppingItem>(
   "shoppingItems/update",
   async (item) => {
     const res = await axios.put(
-      `http://localhost:3000/shoppingItems/${item.id}`,
+      `https://shoping-list-api.onrender.com/shoppingItems/${item.id}`,
       item
     );
     return res.data;
@@ -59,7 +59,7 @@ export const updateShoppingItem = createAsyncThunk<ShoppingItem, ShoppingItem>(
 export const deleteShoppingItem = createAsyncThunk<string, string>(
   "shoppingItems/delete",
   async (id) => {
-    await axios.delete(`http://localhost:3000/shoppingItems/${id}`);
+    await axios.delete(`https://shoping-list-api.onrender.com/shoppingItems/${id}`);
     return id;
   }
 );

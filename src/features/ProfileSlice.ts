@@ -38,7 +38,9 @@ export const fetchProfile = createAsyncThunk<
   { rejectValue: string }
 >("profile/fetchProfile", async (userId, { rejectWithValue }) => {
   try {
-    const response = await axios.get(`http://localhost:3000/user/${userId}`);
+    const response = await axios.get(
+      `https://shoping-list-api.onrender.com/user/${userId}`
+    );
     return response.data;
   } catch (err: any) {
     return rejectWithValue("Failed to load profile");
@@ -53,7 +55,7 @@ export const updateProfile = createAsyncThunk<
 >("profile/updateProfile", async (updatedData, { rejectWithValue }) => {
   try {
     const response = await axios.patch(
-      `http://localhost:3000/user/${updatedData.id}`,
+      `https://shoping-list-api.onrender.com/user/${updatedData.id}`,
       updatedData
     );
     return response.data;

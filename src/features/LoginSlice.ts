@@ -50,7 +50,9 @@ export const loginUser = createAsyncThunk(
   "login/loginUser",
   async (userData: LoginPayload, { rejectWithValue }) => {
     try {
-      const response = await axios.get("http://localhost:3000/user");
+      const response = await axios.get(
+        "https://shoping-list-api.onrender.com/user"
+      );
       const users = response.data as LoginState[];
 
       // Allow login by username OR email
