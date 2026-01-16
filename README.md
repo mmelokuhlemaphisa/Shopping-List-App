@@ -3,7 +3,7 @@
 # 🛒 Shopping List App
 
 A web app that helps users create and manage multiple shopping lists with categorized items.
-Each list can contain products, notes, and images — all stored locally using **JSON Server** as a mock API.
+Each list can contain products, notes, and images — all stored locally using **JSON Server**.
 
 **💻 Live Demo:** [Open Shopping List App](https://shopping-list-app-f3p5.onrender.com)
 
