@@ -6,7 +6,9 @@ A web app that helps users create and manage multiple shopping lists with catego
 Each list can contain products, notes, and images — all stored locally using **JSON Server** as a mock API.
 
 **💻 Live Demo:** [Open Shopping List App](https://shopping-list-app-f3p5.onrender.com)
+
 **🌐 Backend / API:** [Open Shopping List API](https://shoping-list-api.onrender.com)
+
 ---
 
 ## 🧾 Features
