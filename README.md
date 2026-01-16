@@ -1,7 +1,3 @@
-Perfect! We can **update your README** to include your **live app link**, just like in your Weather App README. Here’s a **fixed, clean, and professional version** of your Shopping List README with the live demo included:
-
----
-
 <img src="https://socialify.git.ci/mmelokuhlemaphisa/Shopping-List-App/image?language=1&owner=1&name=1&stargazers=1&theme=Light" alt="Shopping-List-App" width="640" height="320" />
 
 # 🛒 Shopping List App
